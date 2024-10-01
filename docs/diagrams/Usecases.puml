@@ -1,0 +1,59 @@
+title Overlay Network - Use Cases
+left to right direction
+
+actor Application as App
+
+package "Overlay Network" {
+
+
+    package "UaaS" {
+        App --> (Get UaaS Status)
+
+        App --> (Broadcast Tx)
+        App --> (Get Tx Status) 
+        note right
+        Get the status of the broadcast Tx
+        Or another Tx if matches the pattern of interest
+        end note
+
+        
+        App --> (Get Last Blockheader)
+        note right
+        Used to determine if UaaS has caught up with the top of the chain
+        end note
+
+
+        App -> (Get current block height)
+        note right
+        Used to determine how many 
+        blocks a Tx is buried under
+        end note
+
+
+        App -> (Register Callback)
+        note right
+        Register callback on event 
+        * block being mined
+        * Tx of interest spotted
+        end note
+
+        App -> (Unregister Callback)
+    }
+
+
+    package "Financing Service" {
+        App --> (Get FS Status)
+        note right
+        Used to check if service is ready to issue 
+        Outpoints to spend.
+        end note
+
+        App --> (Get Funding Outpoint)
+        note right
+        Get funds to spend
+        end note
+
+    }
+
+
+}

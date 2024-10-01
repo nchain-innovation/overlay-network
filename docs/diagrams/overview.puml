@@ -1,0 +1,32 @@
+@startuml
+title Overlay Network - Overview
+
+
+cloud "Blockchain" {
+}
+
+
+package "System" {
+
+    [Example Application] 
+
+    package "Overlay Network" {
+
+        
+
+        UaaS_API -- [UaaS] : provides
+        [UaaS] .right.> Blockchain: uses
+
+        FS_API -down- [FinancingService] : provides
+        [FinancingService] .right.> UaaS_API: uses
+
+    }
+
+
+}
+
+[Example Application] ..> UaaS_API: uses
+[Example Application] ..> FS_API: uses
+
+
+@enduml
