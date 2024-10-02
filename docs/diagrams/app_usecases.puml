@@ -1,0 +1,29 @@
+
+title Example App - Use Cases
+left to right direction
+
+actor User
+
+package "Example App" {
+    package Status {
+        User --> (Get Status)
+        note right
+        Returns the App, FS and UaaS 
+        status to the User
+        end note
+    }
+    package Admin {
+        User --> (Generate Keys)
+        note right
+        Generates a keypair that can
+        be used in the App config
+        end note
+
+        User --> (Get Balance)
+        note right
+        Returns the Balance from the FS
+        end note
+
+    }
+}
+

@@ -24,3 +24,8 @@ utxo_persistence_enabled = true
 utxo_file = "../data/utxo.json"
 utxo_min_level = 100
 utxo_request_level = 500
+
+[uaas]
+url = "http://host.docker.internal:5010"
+# uaas_address = "http://127.0.0.1:5010"
+# uaas_collections = ["CoCv1", "Fin"]

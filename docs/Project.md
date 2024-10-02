@@ -12,7 +12,6 @@ App - date format consitent in status message
 
 * Build out Example Application
     * Get status/versions of services (FS & UaaS)
-    * Generate key endpoint?
 
 * Financing Service (FS)
     * Get FS to use UaaS
@@ -24,7 +23,6 @@ App - date format consitent in status message
 # Nice to have
 * Prometheus/Grafana for System Monitoring?
     * Do we get this free with K8s?
-
 
 # Questions
 

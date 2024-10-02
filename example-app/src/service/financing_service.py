@@ -42,7 +42,6 @@ class FinancingService:
     def get_status(self) -> Optional[Dict[str, Any]]:
         """ Return the status of the funding service
         """
-        data = None
         try:
             response = requests.get(self.service_url + "/status")
         except:
@@ -53,6 +52,7 @@ class FinancingService:
                 LOGGER.debug(f"data = {data}")
             else:
                 LOGGER.debug(f"response = {response}")
+                raise FinancingServiceException(f"ConnectionError connecting to finance service. Response = {response}.")
         return data
 
     def get_balance(self) -> Dict[str, Any]:
