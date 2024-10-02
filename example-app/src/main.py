@@ -56,9 +56,6 @@ def main():
     config = load_config(CONFIG_FILE)
     service.set_config(config)
 
-    # Note database must be configured before admin_system
-    # Check service can contact dependencies, financing service and UaaS/WoC
-
     run_webserver(config)
 
 

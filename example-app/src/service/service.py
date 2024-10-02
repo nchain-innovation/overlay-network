@@ -1,6 +1,15 @@
+from typing import Dict, Any
+from datetime import datetime
+
 from config import ConfigType
 from tx_engine import Wallet
+from service.financing_service import FinancingService, FinancingServiceException
 
+def time_as_str(time) -> str:
+    if time is None:
+        return "None"
+    else:
+        return time.strftime("%H:%M:%S %d-%m-%Y")
 
 class Service:
     """ This class represents the Orchestrator functionality in the design
@@ -11,10 +20,30 @@ class Service:
 
     def set_config(self, config: ConfigType):
         """ Given the configuration, configure this service"""
-        self.blockchain_enabled = config["orchestrator"]["blockchain_enabled"]
+        self.blockchain_enabled = config["app"]["blockchain_enabled"]
         if self.blockchain_enabled:
             wif = config["wallet"]["wif_key"]
             self.wallet = Wallet(wif)
+            self.financing_service = FinancingService()
+            self.financing_service.set_config(config)
+
+    def get_status(self) -> Dict[str, Any]:
+        """ Return the service status
+        """
+        status = {
+            "status": "Success",
+            "current_time": time_as_str(datetime.now()),
+            "blockchain_enabled": self.blockchain_enabled,
+        }
+
+        if self.blockchain_enabled:
+            try:
+                status["financing_service_status"] = self.financing_service.get_status()
+            except FinancingServiceException as e:
+                status["financing_service_status"] = str(e)
+
+        return status
+
 
 
 service = Service()
