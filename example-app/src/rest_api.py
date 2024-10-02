@@ -52,3 +52,8 @@ def get_generate_keys() -> Dict[str, Any]:
         "address": wallet.get_address(),
     }
 
+
+@app.get("/balance", tags=["Admin"])
+def get_balance() -> Dict[str, Any]:
+    """ Get balance from Financing service """
+    return service.get_balance()

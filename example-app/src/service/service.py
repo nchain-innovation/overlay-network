@@ -5,11 +5,13 @@ from config import ConfigType
 from tx_engine import Wallet
 from service.financing_service import FinancingService, FinancingServiceException
 
+
 def time_as_str(time) -> str:
     if time is None:
         return "None"
     else:
-        return time.strftime("%H:%M:%S %d-%m-%Y")
+        return time.strftime("%Y-%m-%d %H:%M:%S")
+
 
 class Service:
     """ This class represents the Orchestrator functionality in the design
@@ -44,6 +46,22 @@ class Service:
 
         return status
 
+    def get_balance(self) -> Dict[str, Any]:
+        """ Return the service status
+        """
+        if self.blockchain_enabled:
+            try:
+                return self.financing_service.get_balance()
+            except FinancingServiceException as e:
+                return {
+                    "status": "Failure",
+                    "message": str(e),
+                }
+        else:
+            return {
+                "status": "Failure",
+                "message": "Blockchain is not enabled in the application"
+            }
 
 
 service = Service()

@@ -4,6 +4,9 @@
 # Done
 
 FS - no longer returns the names of clients in status message.
+App - provide an endpoint for generating new keys
+App - get balance from financing service
+App - date format consitent in status message
 
 # To Do
 
@@ -22,15 +25,7 @@ FS - no longer returns the names of clients in status message.
 * Prometheus/Grafana for System Monitoring?
     * Do we get this free with K8s?
 
-* Date format consitent in status message
 
 # Questions
-How do we call generate_key from tx-engine?
-
-Does not appear to be included in dist
-installed in `/usr/local/lib/python3.12/site-packages/tx_engine`
-
-Could just provide instructions 
-(Or provide an endpoint for generating new keys).
 
 

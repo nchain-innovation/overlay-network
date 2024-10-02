@@ -55,10 +55,9 @@ class FinancingService:
                 LOGGER.debug(f"response = {response}")
         return data
 
-    def get_balance(self) -> Optional[Dict[str, Any]]:
+    def get_balance(self) -> Dict[str, Any]:
         """ Return the balance for our client_id
         """
-        data = None
         id = self.client_id
         try:
             response = requests.get(self.service_url + f"/balance/{id}")
@@ -70,6 +69,7 @@ class FinancingService:
                 LOGGER.debug(f"data = {data}")
             else:
                 LOGGER.debug(f"response = {response}")
+                raise FinancingServiceException(f"ConnectionError connecting to finance service. Response = {response}.")
         return data
 
     def get_funds(self, fee_estimate: int, locking_script: str) -> Optional[Dict[str, Any]]:
