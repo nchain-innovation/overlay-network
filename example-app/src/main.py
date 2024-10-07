@@ -7,6 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from config import load_config, ConfigType
 from service.service import service
+from service.dynamic_config import dynamic_config
 
 from rest_api import app
 
@@ -55,7 +56,7 @@ def main():
     """
     config = load_config(CONFIG_FILE)
     service.set_config(config)
-
+    dynamic_config.set_config(config)
     run_webserver(config)
 
 

@@ -28,7 +28,6 @@ class FinancingService:
     def set_config(self, config: ConfigType):
         """ Given the configuration, configure this service"""
         self.service_url = config["finance_service"]["url"]
-        self.client_id = config["finance_service"]["client_id"]
         # cache stuff
         self.utxo_cache_enabled = config["finance_service"]["utxo_cache_enabled"]
         self.utxo_persistence_enabled = config["finance_service"]["utxo_persistence_enabled"]
@@ -43,7 +42,7 @@ class FinancingService:
         """ Return the status of the funding service
         """
         try:
-            response = requests.get(self.service_url + "/status")
+            response = requests.get(self.service_url + "/status", timeout=0.25)
         except:
             raise FinancingServiceException("ConnectionError connecting to finance service. Check that the finance service is running.")
         else:
@@ -55,10 +54,9 @@ class FinancingService:
                 raise FinancingServiceException(f"ConnectionError connecting to finance service. Response = {response}.")
         return data
 
-    def get_balance(self) -> Dict[str, Any]:
+    def get_balance(self, id: str) -> Dict[str, Any]:
         """ Return the balance for our client_id
         """
-        id = self.client_id
         try:
             response = requests.get(self.service_url + f"/balance/{id}")
         except:
@@ -72,14 +70,14 @@ class FinancingService:
                 raise FinancingServiceException(f"ConnectionError connecting to finance service. Response = {response}.")
         return data
 
-    def get_funds(self, fee_estimate: int, locking_script: str) -> Optional[Dict[str, Any]]:
+    def get_funds(self, id: str, fee_estimate: int, locking_script: str) -> Optional[Dict[str, Any]]:
         """ Get the funds for one tx
         """
         if self.utxo_cache_enabled:
             # if below the threshold get more tx in the cache
             if locking_script in self.utxo:
                 if len(self.utxo[locking_script]) < self.utxo_min_level:
-                    result = self._get_funds(fee_estimate, locking_script, self.utxo_request_level, False)
+                    result = self._get_funds(id, fee_estimate, locking_script, self.utxo_request_level, False)
                     if result is None:
                         return None
                     else:
@@ -87,7 +85,7 @@ class FinancingService:
                         assert result["status"] == "Success"
                         self.utxo[locking_script].extend(result["outpoints"])
             else:
-                result = self._get_funds(fee_estimate, locking_script, self.utxo_request_level, False)
+                result = self._get_funds(id, fee_estimate, locking_script, self.utxo_request_level, False)
                 if result is None:
                     return None
                 else:
@@ -102,14 +100,13 @@ class FinancingService:
             self.save_utxo()
             return {"status": "Success", "outpoints": [utxo]}
         else:
-            return self._get_funds(fee_estimate, locking_script, 1, False)
+            return self._get_funds(id, fee_estimate, locking_script, 1, False)
 
-    def _get_funds(self, fee_estimate: int, locking_script: str, no_of_outpoints: int, multiple_tx: bool) -> Optional[Dict[str, Any]]:
+    def _get_funds(self, id: str, fee_estimate: int, locking_script: str, no_of_outpoints: int, multiple_tx: bool) -> Optional[Dict[str, Any]]:
         """ Underlying get_funds call
         """
         # Convert to lower case string for url
         mult_tx = "true" if multiple_tx else "false"
-        id = self.client_id
         url = self.service_url + f"/fund/{id}/{fee_estimate}/{no_of_outpoints}/{mult_tx}/{locking_script}"
         response = requests.post(url)
         data = None
@@ -145,3 +142,9 @@ class FinancingService:
             for v in self.utxo.values():
                 sz += len(v)
         return sz
+
+    def add_info(self, client_id: str, wif: str) -> bool:
+        return True
+
+    def delete_info(self, client_id: str) -> bool:
+        return True

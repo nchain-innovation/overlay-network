@@ -34,10 +34,11 @@ main.py
 hello world
 ```
 
-# Generating a Key
-``` bash
-% ./run.sh python3 tools/generate_key.py
-wif = cVFvSok3fhw3eSZ2bjWJxotoUo5Yk5PoQBhdvn3sNEn3zgVeULjV
-address = n1pkEsenMDNfpcXcFNqKymotfACTMxR1FX
-```
+# Use Cases
 
+![Overview](../docs/diagrams/app_usecases.png)
+
+
+# Generating Keys
+
+![Overview](../docs/diagrams/key_sequence.png)

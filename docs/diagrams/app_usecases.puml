@@ -8,20 +8,45 @@ package "Example App" {
     package Status {
         User --> (Get Status)
         note right
-        Returns the App, FS and UaaS 
-        status to the User
+        Returns the status of 
+        * Application
+        * Financing Service (FS)
+        * UaaS 
         end note
     }
-    package Admin {
-        User --> (Generate Keys)
+    package "Application Admin" {
+        User --> (Generate Application Key)
         note right
-        Generates a keypair that can
-        be used in the App config
+        Generates a blockchain keypair 
+        that can be used in the App to sign transactions
         end note
 
-        User --> (Get Balance)
+        User --> (Delete Application Key)
         note right
-        Returns the Balance from the FS
+        Removes the Application key
+        end note
+    }
+
+    package "Financing Service Admin" {
+
+        User --> (Generate Financing Service Info)
+        note right
+        Generates a blockchain keypair and identifier
+        that can be used by the Financing service 
+        to create funding transactions
+        end note
+
+        User --> (Delete Financing Service Info[id])
+
+        User --> (Get Balance[id])
+        note right
+        Given the identifier
+        returns the Balance from the FS
+        end note
+        User --> (Get Address[id])
+        note right
+        Given the identifier
+        returns the associated Address the FS
         end note
 
     }

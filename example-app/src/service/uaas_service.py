@@ -27,7 +27,7 @@ class UaaSService:
         """ Return the status of the uaas service
         """
         try:
-            response = requests.get(self.service_url + "/status")
+            response = requests.get(self.service_url + "/status", timeout=4.0)
         except:
             raise UaaSServiceException("ConnectionError connecting to UaaS. Check that the finance service is running.")
         else:

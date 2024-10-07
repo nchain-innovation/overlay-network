@@ -10,7 +10,7 @@ origins = ["*"]
 blockchain_enabled = true
 
 [wallet]
-wif_key = "cSH2NR16zKeEcWR6Cqvh61aouzbk8ShhWgZXVEWnnR1YNQrfQvkB"
+# wif_key = "cSH2NR16zKeEcWR6Cqvh61aouzbk8ShhWgZXVEWnnR1YNQrfQvkB"
 # address = "mqzGJVq37wHn2zcnH9rMDzqGs5sFMqkgrc"
 tx_cost_amount = 500
 
@@ -18,7 +18,7 @@ tx_cost_amount = 500
 [finance_service]
 url = "http://host.docker.internal:8082"
 # url = "http://127.0.0.1:8082"
-client_id = "id1"
+# client_id = "id1"
 utxo_cache_enabled = false
 utxo_persistence_enabled = true
 utxo_file = "../data/utxo.json"
@@ -29,3 +29,6 @@ utxo_request_level = 500
 url = "http://host.docker.internal:5010"
 # uaas_address = "http://127.0.0.1:5010"
 # uaas_collections = ["CoCv1", "Fin"]
+
+[dynamic_config]
+filename = "../data/dynamic.toml"
