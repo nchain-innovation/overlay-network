@@ -39,10 +39,10 @@ def get_status() -> Dict[str, Any]:
 
 # Endpoint to add add_financing_service_info
 @app.post("/financing_service_info", tags=["Financing Service Admin"])
-def add_financing_service_info(client_id: str, wif: str) -> Dict[str, Any]:
+def add_financing_service_info(client_id: str) -> Dict[str, Any]:
     """ Add info to the financing_service.
     """
-    return service.add_financing_service_info(client_id, wif)
+    return service.add_financing_service_info(client_id)
 
 
 @app.delete("/financing_service_info", tags=["Financing Service Admin"])

@@ -144,6 +144,7 @@ class FinancingService:
         return sz
 
     def add_info(self, client_id: str, wif: str) -> bool:
+        # call FS
         return True
 
     def delete_info(self, client_id: str) -> bool:

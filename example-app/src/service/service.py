@@ -1,11 +1,18 @@
 from typing import Dict, Any
 from datetime import datetime
 
+from packaging.version import Version
 from config import ConfigType
 from tx_engine import Wallet
 from service.financing_service import FinancingService, FinancingServiceException
 from service.uaas_service import UaaSService, UaaSServiceException
 from service.dynamic_config import dynamic_config
+
+REQUIRED_FS_VERSION = "0.3.0"
+
+class ApplicationException(Exception):
+    pass
+
 
 def time_as_str(time) -> str:
     if time is None:
@@ -29,29 +36,40 @@ class Service:
     def __init__(self):
         self.wallet: Wallet | None = None
         self.blockchain_enabled: bool = False
-        self.financing_service_client_id: None | str = None
 
     def set_config(self, config: ConfigType):
         """ Given the configuration, configure this service"""
         self.blockchain_enabled = config["app"]["blockchain_enabled"]
         if self.blockchain_enabled:
             try:
-                wif = config["wallet"]["wif_key"]
+                wif = dynamic_config["wif_key"]
             except KeyError:
                 pass
             else:
                 self.wallet = Wallet(wif)
-            try:
-                client_id = config["finance_service"]["client_id"]
-            except KeyError:
-                pass
-            else:
-                self.financing_service_client_id = client_id
 
             self.financing_service = FinancingService()
             self.financing_service.set_config(config)
             self.uaas = UaaSService()
             self.uaas.set_config(config)
+
+    def check_service_versions(self):
+        if not self.blockchain_enabled:
+            return
+        try:
+            fs_status = self.financing_service.get_status()
+        except FinancingServiceException as e:
+            pass
+        else:        
+            # check_version
+            try:    
+                version = fs_status["version"]
+            except KeyError:
+                raise ApplicationException("Financing Service did not provide version")
+            else:
+                if Version(version) < Version(REQUIRED_FS_VERSION):
+                    raise ApplicationException(f"Financing Service needs to be '{REQUIRED_FS_VERSION}' or above.")
+
 
     def is_blockchain_enabled(self) -> bool:
         return self.blockchain_enabled
@@ -75,7 +93,7 @@ class Service:
                 status["uaas_status"] = str(e)
         return status
 
-    def add_financing_service_info(self, client_id: str, wif: str) -> Dict[str, Any]:
+    def add_financing_service_info(self, client_id: str) -> Dict[str, Any]:
         """ Add key to the financing service to fund the transactions.
         """
         if not self.blockchain_enabled:
@@ -83,18 +101,28 @@ class Service:
                 "status": "Failure",
                 "message": "Blockchain is not enabled in the application"
             }
-        if self.financing_service_client_id is not None:
+        if "client_id" in dynamic_config:
+            # if self.financing_service_client_id is not None:
             return {
                 "status": "Failure",
                 "message": "Application has already has a client_id for the financing service"
             }
+        tmp_wallet = Wallet.generate_keypair("BSV_Testnet")
+
+        # Record WIF to dynamic config
+        wif = tmp_wallet.to_wif()
+        address = tmp_wallet.get_address()
 
         result = self.financing_service.add_info(client_id, wif)
         if result:
             pass
             # Record client_if and WIF to dynamic config
+            dynamic_config["client_id"] = client_id
+            # Financing service should record the WIF
+
         return {
             "status": "Success",
+            "Address": address,
         }
 
     def delete_financing_service_info(self, client_id: str) -> Dict[str, Any]:
@@ -105,19 +133,19 @@ class Service:
                 "status": "Failure",
                 "message": "Blockchain is not enabled in the application"
             }
-        if self.financing_service_client_id is None:
+        try:
+            financing_service_client_id = dynamic_config["client_id"]
+        except KeyError:
+            # if self.financing_service_client_id is None:
             return {
                 "status": "Failure",
                 "message": "Application has no client_id for the financing service"
             }
 
-        result = self.financing_service.delete_info(client_id)
+        result = self.financing_service.delete_info(financing_service_client_id)
         if result:
-            pass
-            # Record client_if and WIF to dynamic config
-
-        # Record client_if and WIF to dynamic config
-        # return service.add_keys(client_id, wif)
+            # Remove client_id from dynamic config
+            del dynamic_config["client_id"]
         return {
             "status": "Success",
         }
@@ -130,13 +158,16 @@ class Service:
                 "status": "Failure",
                 "message": "Blockchain is not enabled in the application"
             }
-        if self.financing_service_client_id is None:
+        try:
+            financing_service_client_id = dynamic_config["client_id"]
+        except KeyError:
+            # if self.financing_service_client_id is None:
             return {
                 "status": "Failure",
                 "message": "Application has no client_id for the financing service"
             }
         try:
-            return self.financing_service.get_balance(self.financing_service_client_id)
+            return self.financing_service.get_balance(financing_service_client_id)
         except FinancingServiceException as e:
             return {
                 "status": "Failure",
@@ -160,11 +191,9 @@ class Service:
             }
 
         self.wallet = Wallet.generate_keypair("BSV_Testnet")
-
         # Record WIF to dynamic config
         wif = self.wallet.to_wif()
-        dynamic_config.add(["wallet", "wif_key"], wif)
-
+        dynamic_config["wif_key"] = wif
         return {
             "status": "Success",
         }
@@ -184,12 +213,10 @@ class Service:
                 "message": "Application does not have a key"
             }
 
-
         del self.wallet
         self.wallet = None
         # Remove WIF from dynamic config
-        dynamic_config.remove(["wallet", "wif_key"])
-
+        del dynamic_config["wif_key"]
         return {
             "status": "Success",
         }
