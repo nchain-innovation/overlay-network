@@ -10,6 +10,7 @@ from service.dynamic_config import dynamic_config
 
 REQUIRED_FS_VERSION = "0.3.0"
 
+
 class ApplicationException(Exception):
     pass
 
@@ -58,18 +59,18 @@ class Service:
             return
         try:
             fs_status = self.financing_service.get_status()
-        except FinancingServiceException as e:
+        except FinancingServiceException:
             pass
-        else:        
-            # check_version
-            try:    
+        else:
+            # Check version
+            try:
+                assert fs_status is not None
                 version = fs_status["version"]
             except KeyError:
                 raise ApplicationException("Financing Service did not provide version")
             else:
                 if Version(version) < Version(REQUIRED_FS_VERSION):
-                    raise ApplicationException(f"Financing Service needs to be '{REQUIRED_FS_VERSION}' or above.")
-
+                    raise ApplicationException(f"Financing Service needs to be version '{REQUIRED_FS_VERSION}' or above.")
 
     def is_blockchain_enabled(self) -> bool:
         return self.blockchain_enabled
@@ -113,13 +114,14 @@ class Service:
         wif = tmp_wallet.to_wif()
         address = tmp_wallet.get_address()
 
-        result = self.financing_service.add_info(client_id, wif)
-        if result:
-            pass
-            # Record client_if and WIF to dynamic config
-            dynamic_config["client_id"] = client_id
-            # Financing service should record the WIF
-
+        if not self.financing_service.add_info(client_id, wif):
+            return {
+                "status": "Failure",
+                "message": "Unable to add client to Financing Service"
+            }
+        # Record client_id to dynamic config
+        dynamic_config["client_id"] = client_id
+        # Financing service should record the WIF
         return {
             "status": "Success",
             "Address": address,
@@ -142,13 +144,15 @@ class Service:
                 "message": "Application has no client_id for the financing service"
             }
 
-        result = self.financing_service.delete_info(financing_service_client_id)
-        if result:
-            # Remove client_id from dynamic config
-            del dynamic_config["client_id"]
-        return {
-            "status": "Success",
-        }
+        if not self.financing_service.delete_info(financing_service_client_id):
+            return {
+                "status": "Failure",
+                "message": "Unable to remove client from the Financing Service"
+            }
+
+        # Remove client_id from dynamic config
+        del dynamic_config["client_id"]
+        return {"status": "Success"}
 
     def get_balance(self) -> Dict[str, Any]:
         """ Return the service status

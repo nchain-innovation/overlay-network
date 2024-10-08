@@ -20,6 +20,7 @@ class DynamicConfig:
         self.load()
 
     def __getitem__(self, field: str) -> Any:
+        print(f"self.config = {self.config}")
         return self.config[field]
 
     def __contains__(self, field: str) -> bool:

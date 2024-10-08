@@ -7,6 +7,7 @@ from config import ConfigType
 
 
 LOGGER = logging.getLogger(__name__)
+UAAS_TIMEOUT = 4.0
 
 
 class UaaSServiceException(Exception):
@@ -27,9 +28,9 @@ class UaaSService:
         """ Return the status of the uaas service
         """
         try:
-            response = requests.get(self.service_url + "/status", timeout=4.0)
+            response = requests.get(self.service_url + "/status", timeout=UAAS_TIMEOUT)
         except:
-            raise UaaSServiceException("ConnectionError connecting to UaaS. Check that the finance service is running.")
+            raise UaaSServiceException("ConnectionError connecting to UaaS. Check that the UaaS is running.")
         else:
             if response.status_code == 200:
                 data = response.json()

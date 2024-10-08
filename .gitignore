@@ -4,6 +4,7 @@
 __pycache__
 
 # Generated data
+/data/dynamic.toml
 
 .DS_Store
 .DS_Store/*

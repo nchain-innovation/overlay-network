@@ -1,7 +1,7 @@
 [web_interface]
 #address = '127.0.0.1:3050'
 address = '0.0.0.0:3050'
-log_level = 'info'
+log_level = 'debug'
 reload = false
 origins = ["*"]
 

@@ -8,8 +8,10 @@ App - provide an endpoint for generating new keys
 App - get balance from financing service
 App - date format consitent in status message
 FS - to query WoC even if there are no Clients, to check connectivity
+FS - Change balance endpoint
 
     * EA - Get status/versions of services (FS & UaaS)
+* EA - Add/Delete application key
 
 
 # In progress 

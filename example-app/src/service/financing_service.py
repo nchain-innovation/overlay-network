@@ -6,6 +6,7 @@ from typing import Any, Dict, Optional
 from config import ConfigType
 
 LOGGER = logging.getLogger(__name__)
+FS_TIMEOUT = 0.25
 
 
 class FinancingServiceException(Exception):
@@ -17,7 +18,6 @@ class FinancingService:
     """
     def __init__(self):
         self.service_url: str
-        self.client_id: str
         self.utxo_cache_enabled: bool
         self.utxo_persistence_enabled: bool
         self.utxo_file: str
@@ -42,7 +42,7 @@ class FinancingService:
         """ Return the status of the funding service
         """
         try:
-            response = requests.get(self.service_url + "/status", timeout=0.25)
+            response = requests.get(self.service_url + "/status", timeout=FS_TIMEOUT)
         except:
             raise FinancingServiceException("ConnectionError connecting to finance service. Check that the finance service is running.")
         else:
@@ -54,11 +54,11 @@ class FinancingService:
                 raise FinancingServiceException(f"ConnectionError connecting to finance service. Response = {response}.")
         return data
 
-    def get_balance(self, id: str) -> Dict[str, Any]:
-        """ Return the balance for our client_id
+    def get_balance(self, client_id: str) -> Dict[str, Any]:
+        """ Return the balance for provided client_id
         """
         try:
-            response = requests.get(self.service_url + f"/balance/{id}")
+            response = requests.get(self.service_url + f"/client/{client_id}/balance", timeout=FS_TIMEOUT)
         except:
             raise FinancingServiceException("ConnectionError connecting to finance service. Check that the finance service is running.")
         else:
@@ -108,7 +108,7 @@ class FinancingService:
         # Convert to lower case string for url
         mult_tx = "true" if multiple_tx else "false"
         url = self.service_url + f"/fund/{id}/{fee_estimate}/{no_of_outpoints}/{mult_tx}/{locking_script}"
-        response = requests.post(url)
+        response = requests.post(url, timeout=FS_TIMEOUT)
         data = None
         if response.status_code == 200:
             data = response.json()
@@ -144,8 +144,26 @@ class FinancingService:
         return sz
 
     def add_info(self, client_id: str, wif: str) -> bool:
-        # call FS
-        return True
+        url = self.service_url + f"/client/{client_id}/{wif}"
+        print(f"url = {url}")
+        response = requests.post(url, timeout=FS_TIMEOUT)
+        data = None
+        if response.status_code == 200:
+            data = response.json()
+            LOGGER.debug(f"data = {data}")
+            return True
+        else:
+            LOGGER.debug(f"response = {response}")
+            return False
 
     def delete_info(self, client_id: str) -> bool:
-        return True
+        url = self.service_url + f"/client/{client_id}"
+        response = requests.delete(url, timeout=FS_TIMEOUT)
+        data = None
+        if response.status_code == 200:
+            data = response.json()
+            LOGGER.debug(f"data = {data}")
+            return True
+        else:
+            LOGGER.debug(f"response = {response}")
+            return False
