@@ -94,6 +94,18 @@ class Service:
                 status["uaas_status"] = str(e)
         return status
 
+    def is_financing_service_running(self) -> bool:
+        """ Returns true if service manages to contact financing service
+        """
+        if not self.blockchain_enabled:
+            return False
+        try:
+            self.financing_service.get_status()
+        except FinancingServiceException:
+            return False
+        else:
+            return True
+
     def add_financing_service_info(self, client_id: str) -> Dict[str, Any]:
         """ Add key to the financing service to fund the transactions.
         """

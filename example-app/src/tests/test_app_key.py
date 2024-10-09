@@ -28,8 +28,9 @@ class AppKeyTests(unittest.TestCase):
         result = service.add_application_key()
         self.assertEqual(result["status"], 'Success')
 
-        # Check file created
+        # Check file created and is not empty
         self.assertTrue(os.path.isfile(DYNAMIC_CONFIG_FILE))
+        self.assertGreater(os.path.getsize(DYNAMIC_CONFIG_FILE), 0)
 
         # Should fail as we already have a key
         result = service.add_application_key()

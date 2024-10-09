@@ -1,6 +1,5 @@
 
 import unittest
-
 import sys
 sys.path.append("..")
 
@@ -27,6 +26,13 @@ class StatusTests(unittest.TestCase):
             'uaas_status': 'ConnectionError connecting to UaaS. Check that the UaaS is running.'
         }
         """
+
+    def test_is_finance_service_running(self):
+        """ Check of FS status
+        """
+        service.set_config(CONFIG)
+        result = service.is_financing_service_running()
+        assert isinstance(result, bool)
 
 
 if __name__ == "__main__":

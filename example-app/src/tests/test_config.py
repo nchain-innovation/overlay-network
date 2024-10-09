@@ -8,7 +8,6 @@ DYNAMIC_CONFIG_FILE = "data/dynamic.toml"
 
 CONFIG = {
     'app': {'blockchain_enabled': True},
-    'wallet': {'tx_cost_amount': 500},
     'finance_service': {
         'url': 'http://host.docker.internal:8082',
         'utxo_cache_enabled': False,

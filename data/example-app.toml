@@ -8,11 +8,11 @@ origins = ["*"]
 
 [app]
 blockchain_enabled = true
+tx_cost_amount = 500
 
 [wallet]
 # wif_key = "cSH2NR16zKeEcWR6Cqvh61aouzbk8ShhWgZXVEWnnR1YNQrfQvkB"
 # address = "mqzGJVq37wHn2zcnH9rMDzqGs5sFMqkgrc"
-tx_cost_amount = 500
 
 
 [finance_service]

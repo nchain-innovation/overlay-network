@@ -12,6 +12,7 @@ FS - Change balance endpoint
 
     * EA - Get status/versions of services (FS & UaaS)
 * EA - Add/Delete application key
+* EA - Add unit tests
 
 
 # In progress 

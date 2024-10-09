@@ -145,7 +145,6 @@ class FinancingService:
 
     def add_info(self, client_id: str, wif: str) -> bool:
         url = self.service_url + f"/client/{client_id}/{wif}"
-        print(f"url = {url}")
         response = requests.post(url, timeout=FS_TIMEOUT)
         data = None
         if response.status_code == 200:

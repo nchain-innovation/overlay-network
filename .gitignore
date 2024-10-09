@@ -5,6 +5,7 @@ __pycache__
 
 # Generated data
 /data/dynamic.toml
+src/tests/data/*
 
 .DS_Store
 .DS_Store/*
