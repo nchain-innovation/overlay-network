@@ -20,7 +20,7 @@ class DynamicConfig:
         self.load()
 
     def __getitem__(self, field: str) -> Any:
-        print(f"self.config = {self.config}")
+        # print(f"self.config = {self.config}")
         return self.config[field]
 
     def __contains__(self, field: str) -> bool:
@@ -43,9 +43,9 @@ class DynamicConfig:
         try:
             with open(self.filename, "r") as f:
                 self.config = toml.load(f)
-        except FileNotFoundError as e:
-            print(f"DynamicConfig - File not found error {e}")
-            LOGGER.warning(f"DynamicConfig - File not found error {e}")
+        except FileNotFoundError:
+            # print(f"DynamicConfig - File not found error {e}")
+            # LOGGER.warning(f"DynamicConfig - File not found error {e}")
             self.config = {}
 
     def save(self):

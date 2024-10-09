@@ -20,7 +20,7 @@ Remove client_id from financing_service.py
 # To Do
 * Build out Example Application
 * EA - Timeouts on all request calls 
-
+* EA - return correct error codes on responses
 
 
 * Financing Service (FS)
