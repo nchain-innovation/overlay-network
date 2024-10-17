@@ -42,3 +42,7 @@ hello world
 # Generating Keys
 
 ![Overview](../docs/diagrams/key_sequence.png)
+
+# Dependencies
+
+![Overview](../docs/diagrams/dependencies.png)

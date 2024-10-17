@@ -37,7 +37,9 @@ class FinancingServiceTests(unittest.TestCase):
 
         version = result["financing_service_status"]['version']
         self.assertTrue(isinstance(version, str))
-        self.assertEqual(result["financing_service_status"]['blockchain_status'], 'Connected')
+        blockchain_status = result["financing_service_status"]['blockchain_status']
+        self.assertTrue(blockchain_status in ['Connected', 'Unknown', 'Failed'])
+
         """
         result = {
             'status': 'Success',

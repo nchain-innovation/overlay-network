@@ -1,0 +1,22 @@
+@startuml
+title Overlay Network - Dependencies
+
+[chain_gang]
+
+[tx_engine]
+
+tx_engine -up-> chain_gang: Uses (Rust Library)
+
+[test-chain_gang] .left.> chain_gang: (For Testing)
+
+
+[UaaS] -up-> chain_gang: Uses
+[FinancingService] -up-> chain_gang: Uses
+FinancingService .right.> UaaS: Calls
+
+[ExampleApplication]
+
+ExampleApplication -up-> "tx_engine": Uses (Python Library)
+ExampleApplication .up.> UaaS: Calls
+ExampleApplication .up.> FinancingService: Calls
+@enduml
