@@ -170,7 +170,7 @@ class Service:
         return {"status": "Success"}
 
     def get_balance(self) -> Dict[str, Any]:
-        """ Return the service status
+        """ Return the blance of the client_id from FS
         """
         if not self.blockchain_enabled:
             return {
@@ -187,6 +187,30 @@ class Service:
             }
         try:
             return self.financing_service.get_balance(financing_service_client_id)
+        except FinancingServiceException as e:
+            return {
+                "status": "Failure",
+                "message": str(e),
+            }
+
+    def get_address(self) -> Dict[str, Any]:
+        """ Return the address of the client_id from FS
+        """
+        if not self.blockchain_enabled:
+            return {
+                "status": "Failure",
+                "message": "Blockchain is not enabled in the application"
+            }
+        try:
+            financing_service_client_id = dynamic_config["client_id"]
+        except KeyError:
+            # if self.financing_service_client_id is None:
+            return {
+                "status": "Failure",
+                "message": "Application has no client_id for the financing service"
+            }
+        try:
+            return self.financing_service.get_address(financing_service_client_id)
         except FinancingServiceException as e:
             return {
                 "status": "Failure",

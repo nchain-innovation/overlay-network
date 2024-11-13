@@ -55,7 +55,6 @@ def main():
     """ main function - reads config, sets up system, starts REST API
     """
     config = load_config(CONFIG_FILE)
-    print(config)
     dynamic_config.set_config(config)   # Needs to be called before service.set_config
     service.set_config(config)
     service.check_service_versions()

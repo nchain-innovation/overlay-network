@@ -57,7 +57,10 @@ url = "http://host.docker.internal:5010"
 ```
 
 ## [dynamic_config]
-This provides detials for the `Application` to obtain it's dynamic configuration.
+This provides details for the `Application` to obtain it's dynamic configuration.
+The dynamic configuration stores:
+* `client_id` - for the Financing Service
+* `wif` - for the Application Key
 
 ``` TOML
 [dynamic_config]

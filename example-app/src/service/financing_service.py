@@ -70,6 +70,22 @@ class FinancingService:
                 raise FinancingServiceException(f"ConnectionError connecting to finance service. Response = {response}.")
         return data
 
+    def get_address(self, client_id: str) -> Dict[str, Any]:
+        """ Return the address for provided client_id
+        """
+        try:
+            response = requests.get(self.service_url + f"/client/{client_id}/address", timeout=FS_TIMEOUT)
+        except:
+            raise FinancingServiceException("ConnectionError connecting to finance service. Check that the finance service is running.")
+        else:
+            if response.status_code == 200:
+                data = response.json()
+                LOGGER.debug(f"data = {data}")
+            else:
+                LOGGER.debug(f"response = {response}")
+                raise FinancingServiceException(f"ConnectionError connecting to finance service. Response = {response}.")
+        return data
+
     def get_funds(self, id: str, fee_estimate: int, locking_script: str) -> Optional[Dict[str, Any]]:
         """ Get the funds for one tx
         """

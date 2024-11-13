@@ -15,15 +15,18 @@ end box
 ' participant TestnetFaucet as TF
 ' participant Blockchain as BC
 
-group Setup_Financing_Service_Key
+group Create_Financing_Service_Key
 
     U -> EA: create_financing_service_key(client_id)
     activate EA
     EA -> EA: generate_key()
     EA -> FS: add_financing_service_info\n(client_id, wif)
     activate FS
+    FS -> FS: store(client_id, wif)
     FS --> EA: success
     deactivate FS
+    
+    EA -> EA: store(client_id)
     EA --> U: success(Address)
     deactivate EA
 

@@ -1,5 +1,5 @@
 @startuml
-title Overlay Network - Appliction Dependencies
+title Overlay Network - Application Dependencies
 
 
 [tx_engine]
@@ -8,11 +8,15 @@ title Overlay Network - Appliction Dependencies
 package Overlay-Network {
     [UaaS] 
     [FinancingService] 
+    FS_API -down- [FinancingService] : provides
+    UaaS_API -down- [UaaS] : provides
+
+
 }
 
 [ExampleApplication]
 
 ExampleApplication -right-> "tx_engine": Uses (Python Library)
-ExampleApplication .down.> UaaS: Calls
-ExampleApplication .down.> FinancingService: Calls
+ExampleApplication .down.> UaaS_API: Calls
+ExampleApplication .down.> FS_API: Calls
 @enduml

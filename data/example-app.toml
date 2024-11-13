@@ -17,8 +17,6 @@ tx_cost_amount = 500
 
 [finance_service]
 url = "http://host.docker.internal:8082"
-# url = "http://127.0.0.1:8082"
-# client_id = "id1"
 utxo_cache_enabled = false
 utxo_persistence_enabled = true
 utxo_file = "../data/utxo.json"
