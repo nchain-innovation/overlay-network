@@ -1,7 +1,9 @@
 # Step by step Application setup
 
+This document provides a step by step guide to setting up the Application. 
 
-This document details how to setup the Application step by step.
+This is required as the Application does not ship with any keys to use, so these must be generated and registered as required.
+Once this is complete the Application is ready to use.
 
 The steps are 
 
@@ -40,7 +42,7 @@ This will start a Swagger web server at http://127.0.0.1:3050/docs (depending on
 
 Click on the Application Swagger interface, then under `Status`:
 
-1. Expand the `Status` endpoint.
+1. Expand the `Get Status` endpoint.
 2. Click on the "Try it out" button 
 3. Click on the "Execute" button 
 
@@ -80,7 +82,14 @@ Click on the Application Swagger interface, then under `Financing Service Admin`
 3. Enter a `client_id` into the text box.
 4. Click on the "Execute" button.
 
-< Show response here>
+The Response body should show:
+```JSON
+
+{
+  "status": "Success",
+  "Address": "mnUyj....kL81vSPsQJdyXRnaQ2Mb38mh2"
+}
+```
 
 This shows the Address associated with the Financing Service Key. 
 
@@ -102,7 +111,7 @@ Click on the Application Swagger interface, then under `UTXO as a Service Admin`
 3. Enter a `name` and `address` into the text box.
 4. Click on the "Execute" button.
 
-The Response body should show
+The Response body should show:
 ```JSON
 {
     "status": "Success"
@@ -151,3 +160,11 @@ Click on the Application Swagger interface, then:
 2. Click on the "Try it out" button.
 3. Click on the "Execute" button.
 
+The Response body should show:
+```JSON
+{
+    "status": "Success"
+}
+```
+
+Now the Application is ready to use!

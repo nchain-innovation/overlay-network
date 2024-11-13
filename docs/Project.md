@@ -53,8 +53,6 @@
 
 
 # Nice to have
-* Prometheus/Grafana for System Monitoring?
-    * Do we get this free with K8s?
 
 * FS - add actions
 * EA - add actions
