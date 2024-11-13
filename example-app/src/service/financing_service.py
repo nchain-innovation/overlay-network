@@ -38,7 +38,7 @@ class FinancingService:
         if self.utxo_cache_enabled:
             self.load_utxo()
 
-    def get_status(self) -> Optional[Dict[str, Any]]:
+    def get_status(self) -> Dict[str, Any]:
         """ Return the status of the funding service
         """
         try:

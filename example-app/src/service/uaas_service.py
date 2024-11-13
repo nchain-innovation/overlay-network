@@ -2,7 +2,7 @@
 import requests
 import logging
 
-from typing import Any, Dict, Optional
+from typing import Any, Dict
 from config import ConfigType
 
 
@@ -24,7 +24,7 @@ class UaaSService:
         """ Given the configuration, configure this service"""
         self.service_url = config["uaas"]["url"]
 
-    def get_status(self) -> Optional[Dict[str, Any]]:
+    def get_status(self) -> Dict[str, Any]:
         """ Return the status of the uaas service
         """
         try:

@@ -76,26 +76,29 @@ class Service:
         return self.blockchain_enabled
 
     def get_status(self) -> Dict[str, Any]:
-        """ Return the service status
+        """ Return the status of the appliction, financing service and UaaS service.
         """
         status = {
-            "status": "Success",
-            "current_time": time_as_str(datetime.now()),
-            "blockchain_enabled": self.blockchain_enabled,
+            "application_status": {
+                "status": "Success",
+                "current_time": time_as_str(datetime.now()),
+                "blockchain_enabled": self.blockchain_enabled,
+            }
         }
         if self.blockchain_enabled:
             try:
                 status["financing_service_status"] = self.financing_service.get_status()
             except FinancingServiceException as e:
-                status["financing_service_status"] = str(e)
+                status["financing_service_status"] = {"error": str(e)}
             try:
-                status["uaas_status"] = self.uaas.get_status()
+                uaas_status = self.uaas.get_status()
+                status["uaas_status"] = uaas_status['status']
             except UaaSServiceException as e:
-                status["uaas_status"] = str(e)
+                status["uaas_status"] = {"error": str(e)}
         return status
 
     def is_financing_service_running(self) -> bool:
-        """ Returns true if service manages to contact financing service
+        """ Returns true if application manages to contact financing service
         """
         if not self.blockchain_enabled:
             return False

@@ -27,8 +27,6 @@ utxo_request_level = 500
 
 [uaas]
 url = "http://host.docker.internal:5010"
-# uaas_address = "http://127.0.0.1:5010"
-# uaas_collections = ["CoCv1", "Fin"]
 
 [dynamic_config]
 filename = "../data/dynamic.toml"
