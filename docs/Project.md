@@ -2,20 +2,29 @@
 
 
 # Done
-FS - no longer returns the names of clients in status message.
-FS - to query WoC even if there are no Clients, to check connectivity
-FS - Change balance endpoint
-FS - Move to main chain-gang, currently using a specific commit
+* Financing Service
+    * no longer returns the names of clients in status message.
+    * to query WoC even if there are no Clients, to check connectivity
+    * Change balance endpoint
+    * Move to main chain-gang, currently using a specific commit
 
-App - provide an endpoint for generating new keys
-App - get balance from financing service
-App - date format consistent in status message
-ES - Remove client_id from financing_service.py
+* Example App 
+    * provide an endpoint for generating new keys
+    * get balance from financing service
+    * date format consistent in status message
+    * Remove client_id from financing_service.py
+    * Add/Delete application key
+    * Add unit tests
+
+    * Timeouts on all request calls 
+    * Get status/versions of services (FS & UaaS)
+        * (waiting for UaaS version)
 
 
-* EA - Add/Delete application key
-* EA - Add unit tests
-* EA - Timeouts on all request calls 
+* UaaS
+    * Provide version number
+    * Need to ensure searching tx finds those in collections
+    * refactor collections in database    
 
 
 # In progress 
@@ -24,23 +33,21 @@ ES - Remove client_id from financing_service.py
 
 # To Do
 
-
 * EA - return correct error codes on responses
-
-* EA - Get status/versions of services (FS & UaaS)
-    * waiting for UaaS version 
 
 * Financing Service (FS)
     * Get FS to use UaaS
     * FS - to remove secp256k1
 
 
+* Chain Gang
+    * Add UaaS Interface
+    * Add UaaS interface tests to project
+
 * UTXO as a Service (UaaS)
-    * Provide version number
     * Get UaaS to provide additional interface
     * See if can use leveldb to speed up Tx updates
-    * Need to ensure searching tx finds those in collections
-    * refactor collections in database    
+    * Utxo as level db 
     * support for other miners, if main miner goes off line
     * provide the hash of the blockheader (to match WoC)
 

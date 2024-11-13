@@ -1,0 +1,33 @@
+@startuml
+title Overlay Network - Create Financing Service Key
+hide footbox
+
+actor User as U
+
+participant ExampleApplication as EA
+
+
+box "Overlay System"  #lightblue
+    participant FinancingService as FS
+    participant UTXO_as_a_Service as UaaS
+end box
+
+' participant TestnetFaucet as TF
+' participant Blockchain as BC
+
+group Setup_Financing_Service_Key
+
+    U -> EA: create_financing_service_key(client_id)
+    activate EA
+    EA -> EA: generate_key()
+    EA -> FS: add_financing_service_info\n(client_id, wif)
+    activate FS
+    FS --> EA: success
+    deactivate FS
+    EA --> U: success(Address)
+    deactivate EA
+
+end group
+
+
+@enduml
