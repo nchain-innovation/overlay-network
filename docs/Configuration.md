@@ -36,10 +36,11 @@ tx_cost_amount = 500
 
 
 ## [finance_service]
-This provides detials for the `Application` to connect to the `Financing Service`.
+This provides details for the `Application` to connect to the `Financing Service`.
 
 ``` TOML
 [finance_service]
+required_version = "1.5.0"
 url = "http://host.docker.internal:8082"
 # url = "http://127.0.0.1:8082"
 # client_id = "id1"
@@ -49,10 +50,14 @@ utxo_file = "../data/utxo.json"
 utxo_min_level = 100
 utxo_request_level = 500
 ```
+
+
 ## [uaas]
-This provides detials for the `Application` to connect to the `UTXO as a Service` (UaaS).
+This provides details for the `Application` to connect to the `UTXO as a Service` (UaaS).
 ``` TOML
 [uaas]
+required_version = "0.2.0"
+
 url = "http://host.docker.internal:5010"
 ```
 

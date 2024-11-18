@@ -1,9 +1,9 @@
 import requests
 import logging
 import json
-import time
 from typing import Any, Dict, Optional
 from config import ConfigType
+from packaging.version import Version
 
 LOGGER = logging.getLogger(__name__)
 FS_TIMEOUT = 0.25
@@ -17,6 +17,7 @@ class FinancingService:
     """ This class represents the Financing Service interface
     """
     def __init__(self):
+        self.required_version: str
         self.service_url: str
         self.utxo_cache_enabled: bool
         self.utxo_persistence_enabled: bool
@@ -27,7 +28,9 @@ class FinancingService:
 
     def set_config(self, config: ConfigType):
         """ Given the configuration, configure this service"""
+        self.required_version = config["finance_service"]["required_version"]
         self.service_url = config["finance_service"]["url"]
+
         # cache stuff
         self.utxo_cache_enabled = config["finance_service"]["utxo_cache_enabled"]
         self.utxo_persistence_enabled = config["finance_service"]["utxo_persistence_enabled"]
@@ -53,6 +56,22 @@ class FinancingService:
                 LOGGER.debug(f"response = {response}")
                 raise FinancingServiceException(f"ConnectionError connecting to finance service. Response = {response}.")
         return data
+
+    def check_version(self):
+        try:
+            fs_status = self.get_status()
+        except FinancingServiceException:
+            pass
+        else:
+            # Check version
+            try:
+                assert fs_status is not None
+                version = fs_status["version"]
+            except KeyError:
+                raise FinancingServiceException("Financing Service did not provide version")
+            else:
+                if Version(version) < Version(self.required_version):
+                    raise FinancingServiceException(f"Financing Service needs to be version '{self.required_version}' or above.")
 
     def get_balance(self, client_id: str) -> Dict[str, Any]:
         """ Return the balance for provided client_id
@@ -125,15 +144,21 @@ class FinancingService:
         mult_tx = "true" if multiple_tx else "false"
         url = self.service_url + f"/fund/{id}/{fee_estimate}/{no_of_outpoints}/{mult_tx}/{locking_script}"
         response = requests.post(url, timeout=FS_TIMEOUT)
-        data = None
         if response.status_code == 200:
-            data = response.json()
-            LOGGER.debug(f"data = {data}")
-            # Delay so that we can see the transaction
-            time.sleep(0.5)
+            print(f"response.text = {response.text}")
+            try:
+                data = response.json()
+            except json.decoder.JSONDecodeError as e:
+                LOGGER.info(f"response = {response}")
+                LOGGER.warning(f"error = {e}")
+                return None
+            else:
+                LOGGER.debug(f"data = {data}")
+                return data
         else:
-            LOGGER.debug(f"response = {response}")
-        return data
+            LOGGER.info(f"response = {response}")
+            print(f"response.text = {response.text}")
+            return None
 
     def load_utxo(self):
         if self.utxo_persistence_enabled:
