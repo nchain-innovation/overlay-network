@@ -1,0 +1,29 @@
+@startuml
+title Overlay Network - Setup Application Key Sequence
+hide footbox
+
+actor User as U
+
+participant ExampleApplication as EA
+
+/'
+box "Overlay System"  #lightblue
+    participant FinancingService as FS
+    participant UTXO_as_a_Service as UaaS
+end box
+
+participant TestnetFaucet as TF
+participant Blockchain as BC
+'/
+
+group Setup_Application_Key
+    U -> EA: create_application_key()
+    activate EA
+    EA -> EA: wif = generate_key()
+    EA -> EA: store_key(wif)
+    EA --> U: success
+    deactivate EA
+end group
+
+
+@enduml

@@ -1,0 +1,47 @@
+@startuml
+title Overlay Network - Create Tx Sequence
+hide footbox
+
+actor User as U
+
+participant ExampleApplication as EA
+
+
+box "Overlay System"  #lightblue
+    participant FinancingService as FS
+    participant UTXO_as_a_Service as UaaS
+end box
+
+' participant TestnetFaucet as TF
+participant Blockchain as BC
+
+group Create_Transaction
+    U -> EA: create_tx()
+    activate EA
+    EA -> FS: create_funding_tx(client_id)
+    activate FS
+    FS -> FS: create_funding_tx(client_id)
+    FS -> UaaS: broadcast(fund_tx)
+    activate UaaS
+    UaaS -> BC: broadcast(fund_tx)
+    UaaS --> FS: success
+    deactivate UaaS
+
+    FS --> EA: fund_tx
+    deactivate FS
+    EA -> EA: create_tx(fund_tx)
+    EA -> EA: sign_tx(tx, wif_key)
+
+    EA -> UaaS: broadcast(tx)
+    activate UaaS
+    UaaS -> BC: broadcast(tx)
+    UaaS --> EA: success
+    deactivate UaaS
+
+
+    EA --> U: success
+    deactivate EA
+end group
+
+
+@enduml

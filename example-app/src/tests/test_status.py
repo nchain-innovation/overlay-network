@@ -15,15 +15,29 @@ class StatusTests(unittest.TestCase):
         """
         service.set_config(CONFIG)
         result = service.get_status()
-        self.assertEqual(result["status"], 'Success')
-        self.assertEqual(result["blockchain_enabled"], True)
+        self.assertEqual(result["application_status"]["status"], 'Success')
+        self.assertEqual(result["application_status"]["blockchain_enabled"], True)
         """
         result = {
-            'status': 'Success',
-            'current_time': '2024-10-09 11:15:18',
-            'blockchain_enabled': True,
-            'financing_service_status': 'ConnectionError connecting to finance service. Check that the finance service is running.',
-            'uaas_status': 'ConnectionError connecting to UaaS. Check that the UaaS is running.'
+            'application_status': {
+                'status': 'Success',
+                'current_time': '2024-11-15 11:42:26',
+                'blockchain_enabled': True
+            },
+            'financing_service_status': {
+                'version': '1.5.0',
+                'blockchain_status': 'Connected',
+                'blockchain_update_time': '2024-11-15 11:42:25'
+            },
+            'uaas_status': {
+                'network': 'testnet',
+                'version': 'unknown',
+                'last block time': '2024-11-15 11:00:37',
+                'block height': 1647058,
+                'number of txs': 187338,
+                'number of utxo entries': 182299,
+                'number of mempool entries': 11
+            }
         }
         """
 

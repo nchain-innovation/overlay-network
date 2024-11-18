@@ -3,9 +3,11 @@
 This document provides a step by step guide to setting up the Application. 
 
 This is required as the Application does not ship with any keys to use, so these must be generated and registered as required.
-Once this is complete the Application is ready to use.
+Once these steps are complete the data is stored and the Application is ready to use. So these steps only have to be performed once.
 
-The steps are 
+Note that for a real-world Application many of these steps could be performed before running the Application and stored in configuration data.
+
+The steps are:
 
 1. Build the Docker Image
 2. Run the Docker Image
@@ -15,7 +17,7 @@ The steps are
 6. Fund Financing Service Key Address
 7. Check the Financing Service Address Balance
 8. Create an Application Key
-
+9. Create a Transaction
 
 ## 1) Build the Docker Image
 ``` bash
@@ -77,7 +79,7 @@ This key will be used by the Financing service to fund the Applications transact
 
 
 Click on the Application Swagger interface, then under `Financing Service Admin`:
-1. Expand the `Add Financing Service Info` endpoint.
+1. Expand the `Add Financing Service Key` endpoint.
 2. Click on the "Try it out" button.
 3. Enter a `client_id` into the text box.
 4. Click on the "Execute" button.
@@ -124,7 +126,9 @@ If you make a mistake you can delete it from the `UaaS` using the `Delete Monito
 
 Once the Financing Service Key has been generated it needs to be funded.
 
-Funds are provided by a testnet Facuet, such as https://witnessonchain.com/faucet/tbsv
+![Fund Address](diagrams/fund_fs_address_sequence.png)
+
+Funds are provided by a testnet Facuet, such as: https://witnessonchain.com/faucet/tbsv
 
 This needs to be provided with the Financing Service Key's Address, that we obtained from the previous step.
 
@@ -155,6 +159,12 @@ This indicates that there are confirmed and/or unconfirmed satoshis associated w
 
 ## 8). Create an Application Key
 
+The Application uses another key for its transactions.
+
+![Setup Application Key](diagrams/setup_app_key_sequence.png)
+
+
+
 Click on the Application Swagger interface, then:
 1. Under `Application Admin` section, expand the `Add Application Key` endpoint.
 2. Click on the "Try it out" button.
@@ -168,3 +178,9 @@ The Response body should show:
 ```
 
 Now the Application is ready to use!
+
+## 9). Create a Transaction
+
+Now we will create a transaction using the Application.
+
+![Create Tx](diagrams/create_tx_sequence.png)

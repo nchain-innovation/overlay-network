@@ -1,0 +1,31 @@
+@startuml
+title Overlay Network - Fund Financing Service Address
+hide footbox
+
+actor User as U
+
+' participant ExampleApplication as EA
+
+/'
+box "Overlay System"  #lightblue
+    participant FinancingService as FS
+    participant UTXO_as_a_Service as UaaS
+end box
+'/
+
+participant TestnetFaucet as TF
+' participant Blockchain as BC
+
+
+group Fund_Financing_Service_Key
+
+    U -> TF : fund(Address)
+    activate TF
+    TF -> TF: fund(Address)
+    TF --> U : success
+    deactivate TF
+
+end group
+
+
+@enduml

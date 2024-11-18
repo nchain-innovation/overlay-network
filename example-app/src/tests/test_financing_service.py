@@ -32,33 +32,35 @@ class FinancingServiceTests(unittest.TestCase):
         """
         service.set_config(CONFIG)
         result = service.get_status()
-        self.assertEqual(result["status"], 'Success')
-        self.assertEqual(result["blockchain_enabled"], True)
+        self.assertEqual(result["application_status"]["status"], 'Success')
+        self.assertEqual(result["application_status"]["blockchain_enabled"], True)
 
         version = result["financing_service_status"]['version']
         self.assertTrue(isinstance(version, str))
         blockchain_status = result["financing_service_status"]['blockchain_status']
         self.assertTrue(blockchain_status in ['Connected', 'Unknown', 'Failed'])
 
+        self.assertEqual(result['uaas_status']['network'], 'testnet')
         """
         result = {
-            'status': 'Success',
-            'current_time': '2024-10-09 14:59:30',
-            'blockchain_enabled': True,
+            'application_status': {
+                'status': 'Success',
+                'current_time': '2024-11-15 11:42:26',
+                'blockchain_enabled': True
+            },
             'financing_service_status': {
-                'version': '0.3.0',
+                'version': '1.5.0',
                 'blockchain_status': 'Connected',
-                'blockchain_update_time': '2024-10-09 13:58:47'
+                'blockchain_update_time': '2024-11-15 11:42:25'
             },
             'uaas_status': {
-                'status': {
-                    'network': 'testnet',
-                    'last block time': '2024-10-09 14:52:21',
-                    'block height': 1640087,
-                    'number of txs': 8176292,
-                    'number of utxo entries': 1189962,
-                    'number of mempool entries': 9
-                }
+                'network': 'testnet',
+                'version': 'unknown',
+                'last block time': '2024-11-15 11:00:37',
+                'block height': 1647058,
+                'number of txs': 187338,
+                'number of utxo entries': 182299,
+                'number of mempool entries': 11
             }
         }
         """
@@ -72,7 +74,7 @@ class FinancingServiceTests(unittest.TestCase):
 
         # Add client
         client_id = "wxyw"
-        result = service.add_financing_service_info(client_id)
+        result = service.add_financing_service_key(client_id)
         self.assertEqual(result["status"], 'Success')
         """
         result = {
@@ -85,26 +87,22 @@ class FinancingServiceTests(unittest.TestCase):
         self.assertGreater(os.path.getsize(DYNAMIC_CONFIG_FILE), 0)
 
         # Try again, should fail
-        result = service.add_financing_service_info(client_id)
+        result = service.add_financing_service_key(client_id)
         self.assertEqual(result["status"], 'Failure')
 
         # Get balance of client
         result = service.get_balance()
         """
         result = {
-            'status': 'Success',
-            'Balance': {
-                'client_id': 'wxyw',
-                'confirmed': 0,
-                'unconfirmed': 0
-            }
+            'confirmed': 0,
+            'unconfirmed': 0
         }
         """
-        self.assertEqual(result["status"], 'Success')
-        self.assertEqual(result["Balance"]['client_id'], 'wxyw')
+        self.assertIsNotNone(result["confirmed"])
+        self.assertIsNotNone(result["unconfirmed"])
 
         # Remove client
-        result = service.delete_financing_service_info(client_id)
+        result = service.delete_financing_service_key(client_id)
         """
         result = {'status': 'Success'}
         """
@@ -114,7 +112,7 @@ class FinancingServiceTests(unittest.TestCase):
         self.assertEqual(os.path.getsize(DYNAMIC_CONFIG_FILE), 0)
 
         # Remove client - should fail
-        result = service.delete_financing_service_info(client_id)
+        result = service.delete_financing_service_key(client_id)
         """
         result = .{'status': 'Failure', 'message': 'Application has no client_id for the financing service'}
         """

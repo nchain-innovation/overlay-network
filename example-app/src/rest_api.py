@@ -1,6 +1,7 @@
 
 from fastapi import FastAPI
 from typing import Dict, Any
+from pydantic import BaseModel
 
 from service.service import service
 from service.uaas_service import AddressMonitor
@@ -40,18 +41,18 @@ def get_status() -> Dict[str, Any]:
 
 # Financing Service Admin
 # Endpoint to add add_financing_service_info
-@app.post("/financing_service_info", tags=["Financing Service Admin"])
-def add_financing_service_info(client_id: str) -> Dict[str, Any]:
-    """ Add info to the financing_service.
+@app.post("/financing_service_key", tags=["Financing Service Admin"])
+def add_financing_service_add_key(client_id: str) -> Dict[str, Any]:
+    """ Add key to the financing_service.
     """
-    return service.add_financing_service_info(client_id)
+    return service.add_financing_service_key(client_id)
 
 
-@app.delete("/financing_service_info", tags=["Financing Service Admin"])
-def delete_financing_service_info(client_id: str) -> Dict[str, Any]:
-    """ Remove financing_service info
+@app.delete("/financing_service_key", tags=["Financing Service Admin"])
+def delete_financing_service_key(client_id: str) -> Dict[str, Any]:
+    """ Remove financing_service key
     """
-    return service.delete_financing_service_info(client_id)
+    return service.delete_financing_service_key(client_id)
 
 
 @app.get("/balance", tags=["Financing Service Admin"])
@@ -94,3 +95,18 @@ def delete_application_key() -> Dict[str, Any]:
     """ Remove application key
     """
     return service.delete_application_key()
+
+
+# Application
+
+# This represents a UTXO as a Service - Address Monitor
+# Simplified for the App
+class TxData(BaseModel):
+    data: str
+
+
+@app.post("/create_tx", tags=["Application"])
+def create_tx(txdata: TxData) -> Dict[str, Any]:
+    """ Add generate an application key and store it
+    """
+    return service.create_tx(txdata.data)
