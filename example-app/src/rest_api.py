@@ -110,3 +110,10 @@ def create_tx(txdata: TxData) -> Dict[str, Any]:
     """ Add generate an application key and store it
     """
     return service.create_tx(txdata.data)
+
+
+@app.get("/tx", tags=["Application"])
+def get_tx(txid: str) -> Dict[str, Any]:
+    """ Given txid get the associated tx from the blockchain
+    """
+    return service.get_tx(txid)

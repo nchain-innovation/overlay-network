@@ -6,7 +6,6 @@ from config import ConfigType
 from packaging.version import Version
 
 LOGGER = logging.getLogger(__name__)
-FS_TIMEOUT = 0.25
 
 
 class FinancingServiceException(Exception):
@@ -19,6 +18,7 @@ class FinancingService:
     def __init__(self):
         self.required_version: str
         self.service_url: str
+        self.timeout: float
         self.utxo_cache_enabled: bool
         self.utxo_persistence_enabled: bool
         self.utxo_file: str
@@ -30,7 +30,7 @@ class FinancingService:
         """ Given the configuration, configure this service"""
         self.required_version = config["finance_service"]["required_version"]
         self.service_url = config["finance_service"]["url"]
-
+        self.timeout = config["finance_service"]["timeout"]
         # cache stuff
         self.utxo_cache_enabled = config["finance_service"]["utxo_cache_enabled"]
         self.utxo_persistence_enabled = config["finance_service"]["utxo_persistence_enabled"]
@@ -45,7 +45,7 @@ class FinancingService:
         """ Return the status of the funding service
         """
         try:
-            response = requests.get(self.service_url + "/status", timeout=FS_TIMEOUT)
+            response = requests.get(self.service_url + "/status", timeout=self.timeout)
         except:
             raise FinancingServiceException("ConnectionError connecting to finance service. Check that the finance service is running.")
         else:
@@ -77,7 +77,7 @@ class FinancingService:
         """ Return the balance for provided client_id
         """
         try:
-            response = requests.get(self.service_url + f"/client/{client_id}/balance", timeout=FS_TIMEOUT)
+            response = requests.get(self.service_url + f"/client/{client_id}/balance", timeout=self.timeout)
         except:
             raise FinancingServiceException("ConnectionError connecting to finance service. Check that the finance service is running.")
         else:
@@ -93,7 +93,7 @@ class FinancingService:
         """ Return the address for provided client_id
         """
         try:
-            response = requests.get(self.service_url + f"/client/{client_id}/address", timeout=FS_TIMEOUT)
+            response = requests.get(self.service_url + f"/client/{client_id}/address", timeout=self.timeout)
         except:
             raise FinancingServiceException("ConnectionError connecting to finance service. Check that the finance service is running.")
         else:
@@ -140,12 +140,15 @@ class FinancingService:
     def _get_funds(self, id: str, fee_estimate: int, locking_script: str, no_of_outpoints: int, multiple_tx: bool) -> Optional[Dict[str, Any]]:
         """ Underlying get_funds call
         """
-        # Convert to lower case string for url
-        mult_tx = "true" if multiple_tx else "false"
-        url = self.service_url + f"/fund/{id}/{fee_estimate}/{no_of_outpoints}/{mult_tx}/{locking_script}"
-        response = requests.post(url, timeout=FS_TIMEOUT)
+        fund_request = {
+            "client_id": id,
+            "satoshi": fee_estimate,
+            "no_of_outpoints": no_of_outpoints,
+            "multiple_tx": multiple_tx,
+            "locking_script": locking_script,
+        }
+        response = requests.post(self.service_url + "/fund", timeout=self.timeout, json=fund_request)
         if response.status_code == 200:
-            print(f"response.text = {response.text}")
             try:
                 data = response.json()
             except json.decoder.JSONDecodeError as e:
@@ -186,7 +189,7 @@ class FinancingService:
 
     def add_info(self, client_id: str, wif: str) -> bool:
         url = self.service_url + f"/client/{client_id}/{wif}"
-        response = requests.post(url, timeout=FS_TIMEOUT)
+        response = requests.post(url, timeout=self.timeout)
         data = None
         if response.status_code == 200:
             data = response.json()
@@ -198,7 +201,7 @@ class FinancingService:
 
     def delete_info(self, client_id: str) -> bool:
         url = self.service_url + f"/client/{client_id}"
-        response = requests.delete(url, timeout=FS_TIMEOUT)
+        response = requests.delete(url, timeout=self.timeout)
         data = None
         if response.status_code == 200:
             data = response.json()

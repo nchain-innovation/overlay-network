@@ -277,13 +277,13 @@ class Service:
         if result is None:
             print("Unable to create funds")
             return None
-        if result['status'] != "Success":
-            return None
-        print(f"result = {result}")
-
-        outpoints = result['outpoints'][0]
+        # Get the first outpoint
+        outpoint = result['outpoints'][0]
+        prev_tx = outpoint['hash']
+        prev_index = int(outpoint['index'])
+        fund_tx = Tx.parse_hexstr(result["txs"][0]["tx"])
         # Create vin
-        vins = [TxIn(prev_tx=bytes.fromhex(outpoints['hash']), prev_index=outpoints['index'])]
+        vins = [TxIn(prev_tx=prev_tx, prev_index=prev_index)]
 
         # Create vout with data
         encoded_data: bytes = f"ExApp,{data}".encode("utf-8")
@@ -293,10 +293,10 @@ class Service:
         ]
         tx = Tx(version=1, tx_ins=vins, tx_outs=vouts, locktime=0)
         # Sign tx
-        # tx = self.wallet.sign_tx(0, fund_tx, tx)
-        if not tx:
+        signed_tx = self.wallet.sign_tx(0, fund_tx, tx)
+        if not signed_tx:
             raise ValueError("Failed to sign & verify signature input before transmission")
-        return tx
+        return signed_tx
 
     def create_tx(self, data: str) -> Dict[str, Any]:
         """ Called by rest_api
@@ -320,12 +320,26 @@ class Service:
             }
 
         tx = self._create_data_tx(data)
-
-        print(f"tx = {tx}")
+        if tx is not None:
+            print(f"tx = {tx}")
+            result = self.uaas.broadcast_tx(tx)
+            print(f"result = {result}")
 
         return {
             "status": "Success",
         }
+
+    def get_tx(self, txid: str) -> Dict[str, Any]:
+        """ Called by rest_api
+        """
+        if not self.blockchain_enabled:
+            return {
+                "status": "Failure",
+                "message": "Blockchain is not enabled in the application"
+            }
+        result = self.uaas.get_tx(txid)
+        print(f"result = {result}")
+        return result
 
 
 service = Service()
