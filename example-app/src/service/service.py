@@ -327,9 +327,10 @@ class Service:
 
         return {
             "status": "Success",
+            "txid": tx.id()
         }
 
-    def get_tx(self, txid: str) -> Dict[str, Any]:
+    def get_tx_as_dict(self, txid: str) -> Dict[str, Any]:
         """ Called by rest_api
         """
         if not self.blockchain_enabled:
@@ -337,7 +338,7 @@ class Service:
                 "status": "Failure",
                 "message": "Blockchain is not enabled in the application"
             }
-        result = self.uaas.get_tx(txid)
+        result = self.uaas.get_tx_as_dict(txid)
         print(f"result = {result}")
         return result
 

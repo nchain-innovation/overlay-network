@@ -116,4 +116,4 @@ def create_tx(txdata: TxData) -> Dict[str, Any]:
 def get_tx(txid: str) -> Dict[str, Any]:
     """ Given txid get the associated tx from the blockchain
     """
-    return service.get_tx(txid)
+    return service.get_tx_as_dict(txid)

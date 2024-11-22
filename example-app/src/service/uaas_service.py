@@ -132,11 +132,11 @@ class UaaSService:
                 print("Failed to broadcast transaction.")
                 raise UaaSServiceException(f"ConnectionError connecting to UaaS. Response = {response}.")
 
-    def get_tx(self, txid: str) -> Dict[str, Any]:
+    def get_tx_as_dict(self, txid: str) -> Dict[str, Any]:
         """ Given the txid return the tx as dictionary"""
 
         try:
-            response = requests.get(self.service_url + f"/tx/hex?hash={txid}", timeout=self.timeout)
+            response = requests.get(self.service_url + f"/tx?hash={txid}", timeout=self.timeout)
         except:
             raise UaaSServiceException("ConnectionError connecting to UaaS. Check that the UaaS is running.")
         match response.status_code:
