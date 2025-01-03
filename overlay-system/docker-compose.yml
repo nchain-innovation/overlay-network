@@ -1,8 +1,8 @@
 
 networks:
-  uaas_network:
+  overlay_network:
     external: false
-    name: uaas_network
+    name: overlay_network
 
 services:
   # Database
@@ -15,7 +15,7 @@ services:
     ports:
       - "3306:3306"  
     networks:
-      - uaas_network
+      - overlay_network
     environment:
         - MYSQL_ROOT_PASSWORD=mysql
         - MYSQL_DATABASE=db
@@ -36,7 +36,7 @@ services:
     ports:
       - 8080:8080
     networks:
-      - uaas_network
+      - overlay_network
 
   # UaaS backend
   uaas_backend:
@@ -45,7 +45,7 @@ services:
     ports:
       - 9000:9000
     networks:
-      - uaas_network
+      - overlay_network
     depends_on:
       database:
         condition: service_healthy
@@ -56,16 +56,30 @@ services:
   # UaaS web API
   uaas_web:
     container_name: uaas_web
-    image: nchain/innovation-uaas-web:v1.2
+    image: nchain/innovation-uaas-web:v1.3
     ports:
       - 5010:5010
     networks:
-      - uaas_network
+      - overlay_network
     depends_on:
       - uaas_backend
     volumes:
     #  - ./python/src:/app/python
       - ./data:/app/data
     restart: on-failure
+  
+  financing_service:
+    container_name: financing_service
+    image: nchain/innovation-financing-service:v2.0
+    ports:
+      - 8082:8082
+    networks:
+      - overlay_network
+    depends_on:
+      - uaas_web
+    volumes:
+      - ./data:/app/bin/data
+    restart: on-failure
+  
 
   
