@@ -70,7 +70,7 @@ services:
   
   financing_service:
     container_name: financing_service
-    image: nchain/innovation-financing-service:v2.0
+    image: nchain/innovation-financing-service:v2.1
     ports:
       - 8082:8082
     networks:

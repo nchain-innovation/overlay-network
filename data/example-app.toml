@@ -16,7 +16,7 @@ tx_cost_amount = 500
 
 
 [finance_service]
-required_version = "1.5.0"
+required_version = "2.1.0"
 timeout = 0.5
 url = "http://host.docker.internal:8082"
 utxo_cache_enabled = false
