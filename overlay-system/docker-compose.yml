@@ -1,0 +1,71 @@
+
+networks:
+  uaas_network:
+    external: false
+    name: uaas_network
+
+services:
+  # Database
+  database:
+    container_name: database
+    image: mysql:8.0.37-bookworm
+    cap_add:
+      - SYS_NICE
+    restart: always
+    ports:
+      - "3306:3306"  
+    networks:
+      - uaas_network
+    environment:
+        - MYSQL_ROOT_PASSWORD=mysql
+        - MYSQL_DATABASE=db
+    healthcheck:
+      test: mysqladmin ping -h 127.0.0.1 -u root --password=$$MYSQL_ROOT_PASSWORD
+    volumes:
+        - ./data/mysql:/var/lib/mysql
+        - ./init_database:/docker-entrypoint-initdb.d/:ro
+  
+  # Basic GUI for interacting with database
+  adminer:
+    container_name: db_admin
+    image: adminer
+    restart: always
+    depends_on:
+      database:
+        condition: service_healthy
+    ports:
+      - 8080:8080
+    networks:
+      - uaas_network
+
+  # UaaS backend
+  uaas_backend:
+    container_name: uaas_backend
+    image: nchain/innovation-uaas-service:v1.2
+    ports:
+      - 9000:9000
+    networks:
+      - uaas_network
+    depends_on:
+      database:
+        condition: service_healthy
+    volumes:
+      - ./data:/app/data
+    restart: on-failure
+
+  # UaaS web API
+  uaas_web:
+    container_name: uaas_web
+    image: nchain/innovation-uaas-web:v1.2
+    ports:
+      - 5010:5010
+    networks:
+      - uaas_network
+    depends_on:
+      - uaas_backend
+    volumes:
+    #  - ./python/src:/app/python
+      - ./data:/app/data
+    restart: on-failure
+
+  
