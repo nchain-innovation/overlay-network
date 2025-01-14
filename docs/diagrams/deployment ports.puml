@@ -1,0 +1,39 @@
+@startuml
+title Overlay Network - Overview
+
+cloud "Blockchain" {
+}
+
+package "System" {
+
+    [Example Application] 
+
+    package "Overlay Network" {
+
+        package UaaS {
+            UaaS_API_port_5010 -down- [uaas_web] : provides
+            UaaS_API_port_8081 -down- [uaas_service] : provides
+            
+            database MySQL 
+            Admin_port_8080 -right- [db_admin]: provides
+            [db_admin] .right.> MySQL: configures
+            
+            [uaas_web] .right.> UaaS_API_port_8081: uses
+            [uaas_web] .right.> MySQL: uses
+
+            [uaas_service] .down.> Blockchain: uses
+            [uaas_service] .down.> MySQL: uses
+
+        }
+
+        FS_API -down- [FinancingService] : provides
+        [FinancingService] .up.> UaaS_API_port_5010: uses
+
+    }
+
+}
+
+[Example Application] ..> UaaS_API_port_5010: uses
+[Example Application] ..> FS_API: uses
+
+@enduml
