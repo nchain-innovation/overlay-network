@@ -39,11 +39,11 @@ services:
       - overlay_network
 
   # UaaS backend
-  uaas_backend:
-    container_name: uaas_backend
+  uaas_service:
+    container_name: uaas_service
     image: nchain/innovation-uaas-service:v1.2
     ports:
-      - 9000:9000
+      - 8081:8081
     networks:
       - overlay_network
     depends_on:
@@ -62,7 +62,7 @@ services:
     networks:
       - overlay_network
     depends_on:
-      - uaas_backend
+      - uaas_service
     volumes:
     #  - ./python/src:/app/python
       - ./data:/app/data
