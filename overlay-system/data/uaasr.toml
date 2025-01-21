@@ -1,0 +1,170 @@
+[service]
+user_agent = "/Bitcoin SV:1.0.11/"
+# network = "mainnet"
+network = "testnet"
+# For serving Python FAST API
+rust_address = "0.0.0.0:8081"
+
+
+[mainnet]
+# ip = ["18.157.234.254",
+ip = ["65.108.14.253"]  # The murphy machine
+port = 8333
+#start_block_hash = "000000000000000013675dba290a19dcec3bfa6a89764687da3ab5fdfe8fee5d"
+#start_block_height = 739859
+start_block_hash = "00000000000000000545267003727771023c9822756f187cbee83a5329ffecd8" # current tip
+start_block_height = 776082
+
+timeout_period = 2048.0
+block_request_period = 280
+
+startup_load_from_database = true
+# startup_load_from_database = false
+
+# Python database access
+host = "host.docker.internal"
+user = "maas"
+password = "maas-password"
+database = "main_uaas_db"
+
+# Used by Python and Rust
+block_file = "../data/main-block.dat"
+save_blocks = false
+save_txs = false
+
+
+[testnet]
+ip = [ "167.172.61.80"]  # Murphy machine
+
+port = 18333
+
+# 2023-07-23 23:52:44
+# start_block_hash = "000000000000057fff6b3ddd2f51e3749ed27a8fea819bcfdceb8d89a1789da7"
+# start_block_height = 1563559
+
+# 2024-10-25 07:12:14
+#start_block_hash = "0000000000002035e634d492fff01d273c8c0afd9ad42aff68672276903c5314"
+#start_block_height = 1643523
+
+# 2025-01-21 07:59:04
+start_block_hash = "0000000078c4866d7fbd7e8a3c0fd90db427bb7d6472d9987297cf0ec7734511"
+start_block_height = 1657403
+
+
+# Note need a larger timeout on testnet
+#timeout_period = 240.0
+# 331 MB block taking over 5 mins to download
+# 600 too small
+# 1000s => 16 mins
+timeout_period = 1000.0
+
+# The startup_load_from_database option makes the service load the data from the database on startup, or from a file.
+# Normally you would load from the database using the setting:
+#   startup_load_from_database = true
+# Loading from a file is useful the database structure is changed and we and want to repopulate the data without having to redownload all the blocks.
+# Note when reading from the file, would expect to delete the following tables:
+#   * blocks, tx, utxo, mempool
+# Prior to starting the service.
+
+startup_load_from_database = true
+#startup_load_from_database = false
+
+
+# Python database access
+host = "host.docker.internal"
+user = "uaas"
+password = "uaas-password"
+database = "uaas_db"
+
+
+# Python database access
+#host = "host.docker.internal"
+#user = "maas"
+#password = "maas-password"
+#database = "main_uaas_db"
+
+# Used by Python and Rust
+block_file = "../data/test-net.dat"
+save_blocks = false
+save_txs = false
+
+#[[collection]]
+#name = "p2pkh"
+#track_descendants = false
+#locking_script_pattern = "76a914[0-9a-f]{40}88ac"
+
+#[[collection]]
+#name = "not_p2pkh"
+#track_descendants = false
+#locking_script_pattern = "006a[0-9a-f]*"
+
+[database]
+mysql_url = "mysql://uaas:uaas-password@localhost:3306/uaas_db"
+mysql_url_docker = "mysql://uaas:uaas-password@host.docker.internal:3306/uaas_db"
+
+# mysql_url = "mysql://maas:maas-password@localhost:3306/main_uaas_db"
+# mysql_url_docker = "mysql://maas:maas-password@host.docker.internal:3306/main_uaas_db"
+
+ms_delay = 300
+retries = 6
+
+[orphan]
+detect = true
+threshold = 100
+
+[logging]
+level = "info"
+
+[utxo]
+complete = 6
+# The number of blocks required to complete a blockchain transaction
+
+
+[[collection]]
+name = "johns"
+track_descendants = false
+locking_script_pattern = "7576a914[0-9a-f]{40}88ac$"
+
+[[collection]]
+name = "dsa"
+track_descendants = false
+locking_script_pattern = "006a[0-9a-f]{2}53417631[0-9a-f]*" 
+# OP_0 OP_RETURN len DSAv1...
+
+
+
+[[collection]]
+name = "CoCv1"
+track_descendants = false
+# 006a19436f4376312c737472696e67207468656f72792c3132333435
+#CoCv1 - 43 6f 43 76 31
+locking_script_pattern = "006a[0-9a-f]{2}436f437631[0-9a-f]*"
+
+[[collection]]
+name = "Fin"
+track_descendants = false
+# Track txs that fund CoCv1
+locking_script_pattern = "76a914c0d164cbb336e3c64338c70506ef543c2fc7b8f988ac"
+
+
+[[collection]]
+name = "1sat"
+track_descendants = true
+
+# len OP_0 OP_IF  len o  r  d  OP_1 len a  p  p  l  i  c  a  t  i  o  n  /  b  s  v  -  2  0  OP_0                                                                OP_ENDIF
+# 62  00   63     03  6f 72 64 51   12  61 70 70 6c 69 63 61 74 69 6f 6e 2f 62 73 76 2d 32 30 00  45 7b2270223a226273762d3230222c226f70223a226465706c6f792b6d696e74222c2273796d223a226d757266222c22616d74223a2231303030222c22646563223a2230227d 68
+locking_script_pattern = "0063036f726451126170706c69636174696f6e2f6273762d323000[0-9a-f]*" 
+
+
+
+[web_interface]
+# 0.0.0.0 if running in docker, 127.0.0.1 if outside docker
+address = '0.0.0.0:5010'
+
+log_level = 'info'
+reload = false
+rust_url = "http://host.docker.internal:8081"
+
+
+[dynamic_config]
+filename = "../data/dynamic.toml"

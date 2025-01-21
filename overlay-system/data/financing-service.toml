@@ -1,0 +1,21 @@
+[blockchain_interface]
+interface_type = "uaas"
+network_type = "testnet"
+url = "http://host.docker.internal:5010"
+
+[web_interface]
+address = "127.0.0.1"
+port = 8082
+
+[logging]
+level = "info"
+
+[service]
+utxo_refresh_period = 60
+
+[dynamic_config]
+filename = "./data/dynamic.toml"
+
+# [[client]]
+# client_id = "id1"
+# wif_key = ""
