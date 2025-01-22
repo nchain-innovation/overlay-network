@@ -56,7 +56,7 @@ services:
   # UaaS web API
   uaas_web:
     container_name: uaas_web
-    image: nchain/innovation-uaas-web:v1.3
+    image: nchain/innovation-uaas-web:v1.4
     ports:
       - 5010:5010
     networks:
