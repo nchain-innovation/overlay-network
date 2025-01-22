@@ -2,11 +2,19 @@
 
 
 # Done
+
+* Chain Gang
+    * Add UaaS Interface
+
 * Financing Service
     * no longer returns the names of clients in status message.
     * to query WoC even if there are no Clients, to check connectivity
     * Change balance endpoint
     * Move to main chain-gang, currently using a specific commit
+    * Get FS to use UaaS
+    * FS - to remove secp256k1
+
+
 
 * Example App 
     * provide an endpoint for generating new keys
@@ -19,6 +27,7 @@
     * Timeouts on all request calls 
     * Get status/versions of services (FS & UaaS)
         * (waiting for UaaS version)
+    * return correct error codes on responses
 
 
 * UaaS
@@ -33,15 +42,7 @@
 
 # To Do
 
-* EA - return correct error codes on responses
-
-* Financing Service (FS)
-    * Get FS to use UaaS
-    * FS - to remove secp256k1
-
-
 * Chain Gang
-    * Add UaaS Interface
     * Add UaaS interface tests to project
 
 * UTXO as a Service (UaaS)
@@ -52,12 +53,5 @@
     * provide the hash of the blockheader (to match WoC)
 
 
-# Nice to have
-
-* FS - add actions
-* EA - add actions
-* UaaS - add actions
-
-# Questions
 
 

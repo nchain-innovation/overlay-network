@@ -14,6 +14,11 @@ In this project we have provided an `Example Application` which uses the `Overla
 ![Overview](docs/diagrams/overview.png)
 
 
+# Getting Started
+
+A step by step guide to getting started can be found [here](docs/Step_by_step_application_setup.md)
+
+
 # Directory Structure
 
 ```
@@ -25,9 +30,9 @@ In this project we have provided an `Example Application` which uses the `Overla
 └── overlay-system
 ```
 * `data` - data and config for this project
-* `docs` - supporting documentations
-* `example-app` - this contains the Example Application
-* `overlay-system` - this contains the Overlay Network components
+* `docs` - supporting documentation
+* `example-app` - contains the Example Application
+* `overlay-system` - contains the components of the Overlay Network
 
 # Example Application
 

@@ -26,7 +26,7 @@ package "System" {
 
         }
 
-        FS_API -down- [FinancingService] : provides
+        FS_API_port_8082 -down- [FinancingService] : provides
         [FinancingService] .up.> UaaS_API_port_5010: uses
 
     }
@@ -34,6 +34,6 @@ package "System" {
 }
 
 [Example Application] ..> UaaS_API_port_5010: uses
-[Example Application] ..> FS_API: uses
+[Example Application] ..> FS_API_port_8082: uses
 
 @enduml

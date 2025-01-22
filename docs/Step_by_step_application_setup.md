@@ -9,23 +9,42 @@ Note that for a real-world Application many of these steps could be performed be
 
 The steps are:
 
-1. Build the Docker Image
-2. Run the Docker Image
-3. Check System Status
-4. Create Financing Service Key
-5. Register Financing Service Key Address with UaaS
-6. Fund Financing Service Key Address
-7. Check the Financing Service Address Balance
-8. Create an Application Key
-9. Create a Transaction
+1. Build the Application Docker Image
+2. Start the Overlay Network Docker Compose
+3. Run the Application Docker Image
+4. Check System Status
+5. Create Financing Service Key
+6. Register Financing Service Key Address with UaaS
+7. Fund Financing Service Key Address
+8. Check the Financing Service Address Balance
+9. Create an Application Key
+10. Create a Transaction
+10. Get the Transaction
 
-## 1) Build the Docker Image
+## 1) Build the Application Docker Image
+To build the Application Docker image
 ``` bash
 % cd example-app
 % ./build.sh
 ```
 
-## 2) Run the Docker Image
+## 2) Start the Overlay Network Docker Compose
+To start the Overlay System use:
+``` bash
+% cd overlay-system
+% docker compose up --detach
+```
+
+To stop the Overlay System use:
+``` bash
+% docker compose down
+```
+If you are turning off your computer then stop the Overlay System, as 
+it may resume without connections to peers etc.
+
+
+## 3) Run the Application Docker Image
+To run the Application Docker image:
 ```bash
 % cd example-app
 % ./run.sh
@@ -40,7 +59,7 @@ This will start a Swagger web server at http://127.0.0.1:3050/docs (depending on
 ![Swagger](../docs/diagrams/example-app.png)
 
 
-## 3) Check the System Status
+## 4) Check the System Status
 
 Click on the Application Swagger interface, then under `Status`:
 
@@ -52,13 +71,16 @@ You should see a response similar to:
 ![Status Response](../docs/diagrams/status_response.png)
 
 
-Here we are looking for 
-* `"blockchain_enabled": true` - from the Application Status section.
-* `"blockchain_status": Connected` - from the Financing Service Status section.
-* `"last block time":` - from the UaaS Status, within 30 minutes of the `current_time` provided by the Application status, this means that the UaaS is current with the blockchain.
-
+Here we are looking for the following:
+* `Application Status` section
+  * `"blockchain_enabled": true` 
+* `Financing Service Status` section
+  * `"blockchain_status": Connected` 
+* `UaaS Status` section  
+  * `"last block time":` within 30 minutes of the `current_time` provided by the Application status, this means that the UaaS is current with the blockchain.
 
 If there are any issues with any of the above then either the supporting services are not running or the Application configuration is incorrect.
+
 The configuration of the Example Application can be found in the TOML file `/data/example-app.toml`. 
 
 The TOML configuration file also provides information about how to connect to the `Financing Service` and `UTXO as a Service`.
@@ -69,7 +91,7 @@ Note that some settings assume the Application is being run in Docker, in partic
 These will need to change if you run the Application outside Docker.
 
 
-## 4) Create Financing Service Key
+## 5) Create Financing Service Key
 
 This section detials the process of generating the Financing Service Key. 
 
@@ -81,7 +103,7 @@ This key will be used by the Financing service to fund the Applications transact
 Click on the Application Swagger interface, then under `Financing Service Admin`:
 1. Expand the `Add Financing Service Key` endpoint.
 2. Click on the "Try it out" button.
-3. Enter a `client_id` into the text box.
+3. Enter a unique `client_id` into the text box.
 4. Click on the "Execute" button.
 
 The Response body should show:
@@ -97,11 +119,11 @@ This shows the Address associated with the Financing Service Key.
 
 This Address can be obtained using the `Get Address` endpoint, which requests the address from the Financing Service.
 
-The Application stores the `client_id` name in its `dynamic config`.
+The Application stores the `client_id` name in its `dynamic config` file.
 For more details about `dynamic config` see [here](../docs/Configuration.md).
 
 
-## 5). Register Financing Service Key Address with UaaS
+## 6). Register Financing Service Key Address with UaaS
 
 The Address needs to be registered with UTXO as a Service (UaaS).
 
@@ -111,7 +133,7 @@ Click on the Application Swagger interface, then under `UTXO as a Service Admin`
 1. Expand the `Add Monitor` endpoint.
 2. Click on the "Try it out" button.
 3. Enter a `name` and `address` into the text box.
-4. Click on the "Execute" button.
+4. Click on the `Execute` button.
 
 The Response body should show:
 ```JSON
@@ -122,7 +144,7 @@ The Response body should show:
 
 If you make a mistake you can delete it from the `UaaS` using the `Delete Monitor` endpoint.
 
-## 6). Fund Financing Service Key Address
+## 7). Fund Financing Service Key Address
 
 Once the Financing Service Key has been generated it needs to be funded.
 
@@ -137,14 +159,14 @@ This needs to be provided with the Financing Service Key's Address, that we obta
 
 On the Facuet website:
 1. Enter the Financing Service Key's Address into the text box.
-2. Click on the "Verify you are human" check box.
-3. Click on the "Shoot me the coin" button.
+2. Click on the `Verify you are human` check box (if present).
+3. Click on the `Shoot me the coin` button.
 
-The Facuet will provide feedback that the sending of funds was successful.
+The Facuet will provide feedback to indicate that the funds were successfully sent.
 
 It can take a few minutes for the funds to arrive.
 
-## 7). Check the Financing Service Address Balance
+## 8). Check the Financing Service Address Balance
 Click on the Application Swagger interface, then under `Financing Service Admin` section:
 1. Expand the `Get Balance` endpoint.
 2. Click on the "Try it out" button.
@@ -157,13 +179,11 @@ The response should look like:
 This indicates that there are confirmed and/or unconfirmed satoshis associated with this address.
 
 
-## 8). Create an Application Key
+## 9). Create an Application Key
 
-The Application uses another key for its transactions.
+The Application uses an additional key for its transactions.
 
 ![Setup Application Key](diagrams/setup_app_key_sequence.png)
-
-
 
 Click on the Application Swagger interface, then:
 1. Under `Application Admin` section, expand the `Add Application Key` endpoint.
@@ -179,8 +199,95 @@ The Response body should show:
 
 Now the Application is ready to use!
 
-## 9). Create a Transaction
+## 10). Create a Transaction
 
 Now we will create a transaction using the Application.
 
 ![Create Tx](diagrams/create_tx_sequence.png)
+
+1. Expand the `Create Tx` endpoint.
+2. Click on the "Try it out" button.
+3. Enter a `data` into the text box (the default is `string`).
+4. Click on the "Execute" button.
+
+The Response body should show:
+
+``` JSON
+{
+  "status": "Success",
+  "txid": "87d8f60ddccdf4f7e221af81fafbe015fc62c5ded94dcffce38f82bfa4ecf361"
+}
+```
+
+## 11). Get the Transaction
+
+Then you can use the `txid` to get the transaction using the `Get Tx` endpoint.
+
+1. Expand the `Get Tx` endpoint.
+2. Click on the "Try it out" button.
+3. Enter the `txid` into the text field.
+4. Click on the "Execute" button.
+
+The Response body should show:
+
+```JSON
+{
+  "hash": "87d8f60ddccdf4f7e221af81fafbe015fc62c5ded94dcffce38f82bfa4ecf361",
+  "tx": {
+    "version": 1,
+    "vin": [
+      {
+        "prevout": {
+          "hash": "18e30fcbc000192d51c001c5573c5b7eb34a660d47ec2429eb93c559009d460c",
+          "n": 1
+        },
+        "scriptSig": "473044022059223664a70608981da30c6ebd4713e1d164d32f94ca1d3b2aa8079e9e9994ab02203affc3241abe917ed6a67c8368ad9df92fcb8eab4343e18aba930d9c43a23a414121027faa8b6273953eebac242a2944e3e73370ca85b054fbdf0e7aaa9eccc792fde8",
+        "sequence": "ffffffff"
+      }
+    ],
+    "vout": [
+      {
+        "value": 0,
+        "scriptPubKey": "006a45784170702c737472696e67",
+        "spent": true
+      }
+    ],
+    "locktime": 0
+  }
+}
+```
+
+The transaction can also be found on `WhatsOnChain` testnet https://test.whatsonchain.com/
+Which will show the Output as ASCII
+```
+jExApp,string
+```
+Where
+* `j` - is an artifact of the OP_0 OP_RETURN
+* `ExApp` - is the application name
+* `string` - was the default text written to the output
+
+These values are the same as the field
+```
+"scriptPubKey": "006a45784170702c737472696e67",
+```
+Using an ASCII table such as https://www.asciitable.com/ we get
+
+
+| Hex Digit | Meaning |
+| --- | --- |
+| 00 | OP_O |
+| 6a | OP_RETURN |
+| 45 | Character `E` |
+| 78 | Character `x` |
+| 41 | Character `A` |
+| 70 | Character `p` |
+| 70 | Character `p` |
+| 2c | Character `,` |
+| 73 | Character `s` |
+| 74 | Character `t` |
+| 72 | Character `r` |
+| 69 | Character `i` |
+| 6e | Character `n` |
+| 67 | Character `g` |
+

@@ -11,3 +11,4 @@ src/tests/data/*
 .DS_Store/*
 
 overlay-system/data/mysql/*
+overlay-system/data/*-dynamic.toml
