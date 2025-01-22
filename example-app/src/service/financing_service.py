@@ -188,8 +188,12 @@ class FinancingService:
         return sz
 
     def add_info(self, client_id: str, wif: str) -> bool:
-        url = self.service_url + f"/client/{client_id}/{wif}"
-        response = requests.post(url, timeout=self.timeout)
+        url = self.service_url + f"/client"
+        info_data = {
+            "client_id": client_id,
+            "wif": wif,
+        }
+        response = requests.post(url, timeout=self.timeout, json=info_data)
         data = None
         if response.status_code == 200:
             data = response.json()
@@ -197,6 +201,8 @@ class FinancingService:
             return True
         else:
             LOGGER.debug(f"response = {response}")
+            print(f"response.status_code = {response.status_code}")
+            print(f"response.text = {response.text}")
             return False
 
     def delete_info(self, client_id: str) -> bool:
