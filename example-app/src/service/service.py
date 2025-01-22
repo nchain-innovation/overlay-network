@@ -325,10 +325,17 @@ class Service:
             result = self.uaas.broadcast_tx(tx)
             print(f"result = {result}")
 
-        return {
-            "status": "Success",
-            "txid": tx.id()
-        }
+            return {
+                "status": "Success",
+                "txid": tx.id()
+            }
+        else:
+            return {
+                "status": "Failure",
+                "message": "Failed to create tx"
+            }
+
+
 
     def get_tx_as_dict(self, txid: str) -> Dict[str, Any]:
         """ Called by rest_api
