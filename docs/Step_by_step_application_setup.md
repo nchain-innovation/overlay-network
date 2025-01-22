@@ -9,26 +9,34 @@ Note that for a real-world Application many of these steps could be performed be
 
 The steps are:
 
-1. Build the Application Docker Image
-2. Start the Overlay Network Docker Compose
-3. Run the Application Docker Image
-4. Check System Status
-5. Create Financing Service Key
-6. Register Financing Service Key Address with UaaS
-7. Fund Financing Service Key Address
-8. Check the Financing Service Address Balance
-9. Create an Application Key
-10. Create a Transaction
-10. Get the Transaction
+1. Clone the Repository 
+2. Build the Application Docker Image
+3. Start the Overlay Network Docker Compose
+4. Run the Application Docker Image
+5. Check System Status
+6. Create Financing Service Key
+7. Register Financing Service Key Address with UaaS
+8. Fund Financing Service Key Address
+9. Check the Financing Service Address Balance
+10. Create an Application Key
+11. Create a Transaction
+12. Get the Transaction
 
-## 1) Build the Application Docker Image
+
+## 1) Clone the Repository 
+Use the following command to clone the repository:
+```bash
+% git clone https://github.com/nchain-innovation/overlay-network
+```
+
+## 2) Build the Application Docker Image
 To build the Application Docker image
 ``` bash
 % cd example-app
 % ./build.sh
 ```
 
-## 2) Start the Overlay Network Docker Compose
+## 3) Start the Overlay Network Docker Compose
 To start the Overlay System use:
 ``` bash
 % cd overlay-system
@@ -43,7 +51,7 @@ If you are turning off your computer then stop the Overlay System, as
 it may resume without connections to peers etc.
 
 
-## 3) Run the Application Docker Image
+## 4) Run the Application Docker Image
 To run the Application Docker image:
 ```bash
 % cd example-app
@@ -59,7 +67,7 @@ This will start a Swagger web server at http://127.0.0.1:3050/docs (depending on
 ![Swagger](../docs/diagrams/example-app.png)
 
 
-## 4) Check the System Status
+## 5) Check the System Status
 
 Click on the Application Swagger interface, then under `Status`:
 
@@ -91,9 +99,9 @@ Note that some settings assume the Application is being run in Docker, in partic
 These will need to change if you run the Application outside Docker.
 
 
-## 5) Create Financing Service Key
+## 6) Create Financing Service Key
 
-This section detials the process of generating the Financing Service Key. 
+This section details the process of generating the Financing Service Key. 
 
 This key will be used by the Financing service to fund the Applications transactions.
 
@@ -123,7 +131,7 @@ The Application stores the `client_id` name in its `dynamic config` file.
 For more details about `dynamic config` see [here](../docs/Configuration.md).
 
 
-## 6). Register Financing Service Key Address with UaaS
+## 7). Register Financing Service Key Address with UaaS
 
 The Address needs to be registered with UTXO as a Service (UaaS).
 
@@ -144,29 +152,29 @@ The Response body should show:
 
 If you make a mistake you can delete it from the `UaaS` using the `Delete Monitor` endpoint.
 
-## 7). Fund Financing Service Key Address
+## 8). Fund Financing Service Key Address
 
 Once the Financing Service Key has been generated it needs to be funded.
 
 ![Fund Address](diagrams/fund_fs_address_sequence.png)
 
-Funds are provided by a testnet Facuet, such as: https://witnessonchain.com/faucet/tbsv
+Funds are provided by a testnet Faucet, such as: https://witnessonchain.com/faucet/tbsv
 
 This needs to be provided with the Financing Service Key's Address, that we obtained from the previous step.
 
 ![Testnet Faucet](diagrams/testnet_faucet.png)
 
 
-On the Facuet website:
+On the Faucet website:
 1. Enter the Financing Service Key's Address into the text box.
 2. Click on the `Verify you are human` check box (if present).
 3. Click on the `Shoot me the coin` button.
 
-The Facuet will provide feedback to indicate that the funds were successfully sent.
+The Faucet will provide feedback to indicate that the funds were successfully sent.
 
 It can take a few minutes for the funds to arrive.
 
-## 8). Check the Financing Service Address Balance
+## 9). Check the Financing Service Address Balance
 Click on the Application Swagger interface, then under `Financing Service Admin` section:
 1. Expand the `Get Balance` endpoint.
 2. Click on the "Try it out" button.
@@ -179,7 +187,7 @@ The response should look like:
 This indicates that there are confirmed and/or unconfirmed satoshis associated with this address.
 
 
-## 9). Create an Application Key
+## 10). Create an Application Key
 
 The Application uses an additional key for its transactions.
 
@@ -199,7 +207,7 @@ The Response body should show:
 
 Now the Application is ready to use!
 
-## 10). Create a Transaction
+## 11). Create a Transaction
 
 Now we will create a transaction using the Application.
 
