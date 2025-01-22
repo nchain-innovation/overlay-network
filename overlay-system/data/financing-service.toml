@@ -4,7 +4,7 @@ network_type = "testnet"
 url = "http://host.docker.internal:5010"
 
 [web_interface]
-address = "127.0.0.1"
+address = "0.0.0.0"
 port = 8082
 
 [logging]
@@ -14,7 +14,7 @@ level = "info"
 utxo_refresh_period = 60
 
 [dynamic_config]
-filename = "./data/dynamic.toml"
+filename = "./data/finance-dynamic.toml"
 
 # [[client]]
 # client_id = "id1"

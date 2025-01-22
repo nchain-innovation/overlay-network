@@ -167,4 +167,4 @@ rust_url = "http://host.docker.internal:8081"
 
 
 [dynamic_config]
-filename = "../data/dynamic.toml"
+filename = "../data/uaas-dynamic.toml"
