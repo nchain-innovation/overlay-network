@@ -34,6 +34,7 @@ To build the Application Docker image
 ``` bash
 % cd example-app
 % ./build.sh
+% cd ..
 ```
 
 ## 3) Start the Overlay Network Docker Compose
@@ -41,6 +42,7 @@ To start the Overlay System use:
 ``` bash
 % cd overlay-system
 % docker compose up --detach
+% cd ..
 ```
 
 To stop the Overlay System use:
@@ -123,7 +125,8 @@ The Response body should show:
 }
 ```
 
-This shows the Address associated with the Financing Service Key. 
+This shows the Address associated with the Financing Service Key.
+Make a note of the Address as it will be used to fund the account.
 
 This Address can be obtained using the `Get Address` endpoint, which requests the address from the Financing Service.
 
